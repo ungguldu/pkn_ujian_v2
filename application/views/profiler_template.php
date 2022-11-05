@@ -9,63 +9,48 @@ $bar_location = 'bottom-right';
         clear: both;
         background: #222;
         padding: 0 5px;
-        font-family: Helvetica, sans-serif;
-        font-size: 10px !important;
-        line-height: 12px;
+        font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
+        font-size: .75rem !important;
+        line-height: .75rem;
         position: absolute;
         width: auto;
-        min-width: 74em;
-        max-width: 90%;
+        min-width: 75vw;
+        max-width: 100%;
         z-index: 3000;
         display: none;
-    }
-
-    #codeigniter-profiler.bottom-right {
-        position: fixed;
-        bottom: 0;
-        right: 0;
-        -webkit-border-top-left-radius: 7px;
-        -moz-border-radius-topleft: 7px;
-        border-top-left-radius: 7px;
-        -webkit-box-shadow: -1px -1px 10px #999;
-        -moz-box-shadow: -1px -1px 10px #999;
-        box-shadow: -1px -1px 10px #999;
     }
 
     #codeigniter-profiler.bottom-left {
         position: fixed;
         bottom: 0;
         left: 0;
-        -webkit-border-top-right-radius: 7px;
-        -moz-border-radius-topright: 7px;
         border-top-right-radius: 7px;
-        -webkit-box-shadow: 1px -1px 10px #999;
-        -moz-box-shadow: 1px -1px 10px #999;
-        box-shadow: 1px -1px 10px #999;
+        box-shadow: 1px -1px 10px #b3b3b3;
     }
 
     #codeigniter-profiler.top-left {
         position: fixed;
         top: 0;
         left: 0;
-        -webkit-border-bottom-right-radius: 7px;
-        -moz-border-radius-bottomright: 7px;
         border-bottom-right-radius: 7px;
-        -webkit-box-shadow: 1px 1px 10px #999;
-        -moz-box-shadow: 1px 1px 10px #999;
-        box-shadow: 1px 1px 10px #999;
+        box-shadow: 1px 1px 10px #b3b3b3;
     }
 
     #codeigniter-profiler.top-right {
         position: fixed;
         top: 0;
         right: 0;
-        -webkit-border-bottom-left-radius: 7px;
-        -moz-border-radius-bottomleft: 7px;
         border-bottom-left-radius: 7px;
-        -webkit-box-shadow: -1px 1px 10px #999;
-        -moz-box-shadow: -1px 1px 10px #999;
-        box-shadow: -1px 1px 10px #999;
+        box-shadow: -1px 1px 10px #b3b3b3;
+    }
+
+    #codeigniter-profiler.bottom-right {
+        position: fixed;
+        bottom: 0;
+        right: 0;
+        min-width: 100vw;
+        display: flex;
+        flex-direction: column;
     }
 
     #codeigniter-profiler.bottom {
@@ -74,10 +59,8 @@ $bar_location = 'bottom-right';
         left: 0;
         right: 0;
         width: 100%;
-        max-width: 99.5%;
-        -webkit-box-shadow: 0px 1px 10px #999;
-        -moz-box-shadow: 0px 1px 10px #999;
-        box-shadow: 0px 1px 10px #999;
+        max-width: 100%;
+        box-shadow: 0px 1px 10px #b3b3b3;
     }
 
     #codeigniter-profiler.top {
@@ -87,27 +70,24 @@ $bar_location = 'bottom-right';
         right: 0;
         width: 100%;
         max-width: 99.5%;
-        -webkit-box-shadow: -1px 1px 10px #999;
-        -moz-box-shadow: -1px 1px 10px #999;
-        box-shadow: -1px 1px 10px #999;
+        -webkit-box-shadow: -1px 1px 10px #b3b3b3;
+        -moz-box-shadow: -1px 1px 10px #b3b3b3;
+        box-shadow: -1px 1px 10px #b3b3b3;
     }
 
     .ci-profiler-box {
-        padding: 10px;
-        margin: 0 0 10px 0;
-        max-height: 400px;
+        margin: 0 0 .5rem 0;
+        max-height: 33vh;
         overflow: auto;
         color: #fff;
-        font-family: Monaco, 'Lucida Console', 'Courier New', monospace;
-        font-size: 11px !important;
+        font-family: consolas;
     }
 
     .ci-profiler-box h2 {
-        font-family: Helvetica, sans-serif;
-        font-weight: bold;
+        font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
+        font-weight: normal;
         font-size: 16px !important;
         padding: 0;
-        line-height: 2.0;
     }
 
     #ci-profiler-vars a {
@@ -119,61 +99,60 @@ $bar_location = 'bottom-right';
         display: inline-block;
         padding: 7px 0;
         margin: 0;
-        color: #ccc;
+        color: #a3a3a3;
         text-decoration: none;
-        font-weight: lighter;
         cursor: pointer;
         text-align: center;
-        width: 13%;
+        width: 13.33vw;
         border-bottom: 4px solid #444;
     }
 
     #ci-profiler-menu a:hover,
     #ci-profiler-menu a.current {
         background-color: #222;
-        border-color: #999;
+        border-color: #b3b3b3;
     }
 
     #ci-profiler-menu a span {
         display: block;
         font-weight: bold;
-        font-size: 16px !important;
-        line-height: 1.2;
+        font-size: .825rem !important;
+        line-height: 1.3;
     }
 
     #ci-profiler-menu-time span,
     #ci-profiler-benchmarks h2 {
-        color: #B72F09;
+        color: #F0590F;
     }
 
     #ci-profiler-menu-memory span,
     #ci-profiler-memory h2 {
-        color: #953FA1;
+        color: #F0590F;
     }
 
     #ci-profiler-menu-queries span,
     #ci-profiler-queries h2 {
-        color: #3769A0;
+        color: #F0590F;
     }
 
     #ci-profiler-menu-eloquent span,
     #ci-profiler-eloquent h2 {
-        color: #f4726d;
+        color: #F0590F;
     }
 
     #ci-profiler-menu-vars span,
     #ci-profiler-vars h2 {
-        color: #D28C00;
+        color: #F0590F;
     }
 
     #ci-profiler-menu-files span,
     #ci-profiler-files h2 {
-        color: #5a8616;
+        color: #F0590F;
     }
 
     #ci-profiler-menu-console span,
     #ci-profiler-console h2 {
-        color: #5a8616;
+        color: #F0590F;
     }
 
     #codeigniter-profiler table {
@@ -184,11 +163,10 @@ $bar_location = 'bottom-right';
         padding: 7px 15px;
         text-align: left;
         vertical-align: top;
-        color: #aaa;
-        border-bottom: 1px dotted #444;
+        border-bottom: 1px dotted #555d6c;
         line-height: 1.5;
-        background: #101010 !important;
-        font-size: 12px !important;
+        background: #35393e !important;
+        font-size: 11px;
     }
 
     #codeigniter-profiler table.main tr:hover td {
@@ -204,7 +182,7 @@ $bar_location = 'bottom-right';
     }
 
     #codeigniter-profiler table .hilight {
-        color: #FFFD70 !important;
+        color: #0FE130 !important;
     }
 
     #codeigniter-profiler table .faded {
