@@ -1,0 +1,20 @@
+{
+	"description": "Aplikasi Ujian Closed LAN BAK PKN STAN",
+	"name": "codeigniter3/starter3.1",
+	"type": "project",
+	"homepage": "https://pknstan.ac.id",
+	"license": "MIT",
+	"require": {
+		"php": ">=8.0",
+        "codeigniter/framework": ">=3.1",
+		"phpoffice/phpspreadsheet": "^1.23",
+		"phpmailer/phpmailer": "^6.6",
+		"dompdf/dompdf": "^2.0",
+		"endroid/qr-code": "^4.4"
+	},
+	"support": {
+		"forum": "http://forum.codeigniter.com/",
+		"slack": "https://codeigniterchat.slack.com",
+		"source": "https://github.com/bcit-ci/CodeIgniter"
+	}
+}
