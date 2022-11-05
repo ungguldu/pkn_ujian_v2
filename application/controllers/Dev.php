@@ -84,18 +84,18 @@ class Dev extends CI_Controller
             $migration_keys[] = $key;
         }
         if (isset($version) && array_key_exists($version, $migrations) && $this->migration->version($version)) {
-            echo 'The migration was reset to the version: ' . $version;
+            $this->cli->log('✅ Migrasi database berhasil direst ke versi: '.$version, 'light_green');
             exit;
         } elseif (isset($version) && !array_key_exists($version, $migrations)) {
-            echo 'The migration with version number ' . $version . ' doesn\'t exist.';
+            $this->cli->log('🕵️ Migrasi versi: '.$version.' tidak ditemukan', 'red');
         } else {
             // Jika jumlah migrasi = 1 maka versi migrasi di 0 kan. jika lebih dari 1, mak migration ke key sebelumnya.
             $penultimate = (sizeof($migration_keys) == 1) ? 0 : $migration_keys[sizeof($migration_keys) - 2];
             if ($this->migration->version($penultimate)) {
-                echo 'The migration has been rolled back successfully.';
+                $this->cli->log('✅ Migrasi database berhasil dirollback.', 'light_green');
                 exit;
             } else {
-                echo 'Couldn\'t roll back the migration.';
+                $this->cli->log('🚫 Migrasi gagal dirollback! Ulangi kembali', 'red');
                 exit;
             }
         }
@@ -113,10 +113,10 @@ class Dev extends CI_Controller
     public function reset_migration()
     {
         if ($this->migration->current() !== false) {
-            echo 'Migrasi database berhasil direst sesuai config file... ';
+            $this->cli->log('✅ Migrasi database berhasil direst sesuai config file.', 'light_green');
             return true;
         } else {
-            echo 'Couldn\'t reset migration.';
+            $this->cli->log('🚫 Migrasi database gagal direst! Ulangi kembali', 'red');
             show_error($this->migration->error_string());
             exit;
         }
