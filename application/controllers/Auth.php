@@ -59,9 +59,7 @@ class Auth extends CI_Controller
             set_alert('danger', 'Kombinasi NIM dan kode keamanan tidak cocok!', 'auth/mahasiswa');
         }
 
-        $data = [
-            'page' => 'pages/auth/mahasiswa'
-        ];
+        $data = ['page' => 'pages/auth/mahasiswa'];
         $this->load->view('template_auth', $data ?? null, false);
     }
 
@@ -94,9 +92,7 @@ class Auth extends CI_Controller
             set_alert('danger', 'Kombinasi email dan/atau password tidak cocok!', 'auth/admin');
         }
 
-        $data = [
-            'page' => 'pages/auth/admin'
-        ];
+        $data = ['page' => 'pages/auth/admin'];
         $this->load->view('template_auth', $data ?? null, false);
     }
 
@@ -145,9 +141,7 @@ class Auth extends CI_Controller
             set_alert('danger', 'Kombinasi email dan/atau password tidak cocok!', 'auth/pengawas');
         }
 
-        $data = [
-            'page' => 'pages/auth/pengawas'
-        ];
+        $data = ['page' => 'pages/auth/pengawas'];
         $this->load->view('template_auth', $data ?? null, false);
     }
 
