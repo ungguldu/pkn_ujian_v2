@@ -130,11 +130,8 @@ class Migration_generator
                     continue;
                 }
             }
-
-            echo "Create migration success!";
             return true;
         } else {
-            echo "Empty table set!";
             return false;
         }
     }
