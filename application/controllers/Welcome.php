@@ -14,8 +14,11 @@ class Welcome extends MY_Controller
     {
         switch (user()->role) {
             case 'akademik':
+                $setting = $this->db->select('nama, isi')->get('apps_setting')->result_array();
+                $setting = array_column($setting, 'isi', 'nama');           
                 $data = [
                     'page' => 'pages/akademik/welcome',
+                    'setting' => $setting ?? null,
                 ];
 
                 $this->load->view('template_apps', $data ?? null, false);
@@ -29,6 +32,39 @@ class Welcome extends MY_Controller
             default:
                 redirect('mahasiswa');
                 break;
+        }
+    }
+
+    public function simpan_setting()
+    {
+        if((user()->role !== 'akademik')) {
+            show_404();
+        }
+        $post = $this->input->post();
+        // cek apakah nama setting sudah ada
+        $post_name = array_keys($post);
+        $cek = $this->db->where_in('nama', $post_name)->from('apps_setting')->get()->result_array();
+        // konstruksi data menjadi array
+        $data = [];
+        foreach ($post as $i => $item) {
+            $data[$i] = ['nama' => $i, 'isi' => $item];
+        }
+
+        //tampilkan_json($data);
+        if(empty($cek)){
+            if(count($data) > 1) {
+                $this->db->insert_batch('apps_setting', $data);
+            } else {
+                $this->db->insert('apps_setting', $data[$post_name[0]]);
+            }
+            set_alert('success', 'Setting berhasil disimpan.', $this->agent->referrer() ?? 'welcome');         
+        } else {
+            if(count($data) > 1){
+                $this->db->update_batch('apps_setting', $data, 'nama');
+            } else {
+                $this->db->update('apps_setting', $data[$post_name[0]]);
+            }
+            set_alert('success', 'Setting berhasil diupdate.', $this->agent->referrer() ?? 'welcome');  
         }
     }
 
