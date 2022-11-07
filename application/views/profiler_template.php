@@ -182,7 +182,7 @@ $bar_location = 'bottom-right';
     }
 
     #codeigniter-profiler table .hilight {
-        color: #0FE130 !important;
+        color: #E8E400 !important;
     }
 
     #codeigniter-profiler table .faded {
