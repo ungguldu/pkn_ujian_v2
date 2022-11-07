@@ -18,6 +18,8 @@
 	<!-- Tabler Core -->
 	<script src="<?= base_url('assets/'); ?>js/tabler.min.js" defer></script>
 	<script src="<?= base_url('assets/'); ?>js/demo.min.js" defer></script>
+	<script src="<?= base_url('assets/'); ?>js/demo-theme.min.js" defer></script>
+
 </head>
 
 <body>
@@ -53,18 +55,18 @@
 			} else {
 				var els = sidenav.querySelectorAll('a[href="' + url + '"]');
 			}
-			for (var i = 0, l = els.length; i < l; i++) {
+			/* for (var i = 0, l = els.length; i < l; i++) {
 				//els[i].classList.add("active");
 				//var parent = els[i].parentNode.previousElementSibling;
-				/* if (parent !== null && parent.classList.contains('dropdown-toggle')) {
+				if (parent !== null && parent.classList.contains('dropdown-toggle')) {
 					parent.classList.add("show");
 					parent.ariaExpanded = true;
 				}
 				var submenu = els[i].closest(".dropdown-menu");
 				if (submenu !== null) {
 					submenu.classList.add("show");
-				} */
-			}
+				}
+			} */
 		}
 		active_sidebar();
 		var element = document.querySelector('.alert');
