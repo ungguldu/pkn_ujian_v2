@@ -21,7 +21,7 @@
             </div>
             <div class="nav-item dropdown">
                 <a href="#" class="nav-link d-flex lh-1 text-reset p-0" data-bs-toggle="dropdown" aria-label="Open user menu">
-                    <span class="avatar avatar-sm" style="background-image: url(<?= base_url('assets/img/avatar.png'); ?>)"></span>
+                    <span class="avatar avatar-sm" style="background-image: url(<?= base_url('assets/img/user_ava.png'); ?>)"></span>
                     <div class="d-none d-xl-block ps-2">
                         <div><?= (!empty(user()) and !empty(user()->nama_lengkap)) ? user()->nama_lengkap : user()->email; ?></div>
                         <div class="mt-1 small text-muted">
