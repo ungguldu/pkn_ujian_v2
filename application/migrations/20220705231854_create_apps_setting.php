@@ -22,6 +22,7 @@ class Migration_create_apps_setting extends CI_Migration
             'nama' => array(
                 'type' => 'VARCHAR',
                 'constraint' => '50',
+                'unique' => TRUE,
                 'null' => TRUE,
             ),
             'isi' => array(
