@@ -38,7 +38,7 @@ class Dev extends CI_Controller
         $this->cli->log('fitur lain dalam pengembangan.', 'red');
     }
 
-    public function gen_migrate(string $table = null)
+    public function gen_migration(string $table = null)
     {
         // cek param tabel
         empty($table) and exit('parameter table harus diisi!');
