@@ -118,9 +118,9 @@ function soal_diupload($id_jadwal = null)
  * Samarkan function
  * adalah fungsi untuk menyamarkan (encript) string
  * @param boolean $decrip
- * @return void
+ * @return string
  */
-function samarkan($string = '', bool $decrip = false)
+function samarkan(string $string = '', bool $decrip = false)
 {
     if (empty($string)) {
         return false;
