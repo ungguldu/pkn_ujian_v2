@@ -76,7 +76,7 @@ $bar_location = 'bottom-right';
     }
 
     .ci-profiler-box {
-        margin: 0 0 .5rem 0;
+        margin: 0 0 .5rem 1rem;
         max-height: 33vh;
         overflow: auto;
         color: #fff;
@@ -167,6 +167,14 @@ $bar_location = 'bottom-right';
         line-height: 1.5;
         background: #35393e !important;
         font-size: 11px;
+        color: bisque;
+    }
+
+    #codeigniter-profiler table.main td pre {
+        background: #35393e;
+        color: bisque;
+        font-size: .625rem;
+        margin: 0;
     }
 
     #codeigniter-profiler table.main tr:hover td {
@@ -596,7 +604,9 @@ $bar_location = 'bottom-right';
                             <?php foreach ($sections['userdata'] as $key => $val) : ?>
                                 <tr>
                                     <td class="hilight"><?php echo $key ?></td>
-                                    <td><?php var_dump($val) ?></td>
+                                    <td>
+                                        <pre><?php var_dump($val) ?></pre>
+                                    </td>
                                 </tr>
                             <?php endforeach; ?>
                         </table>
