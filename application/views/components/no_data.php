@@ -1,7 +1,7 @@
 <?php defined('BASEPATH') or exit('No direct script access allowed'); ?>
 
 <div class="empty">
-    <div class="empty-img"><img src="<?= base_url('assets/img/no_data.svg')?>" height="128" alt="No_DATA">
+    <div class="empty-img"><img src="<?= base_url('assets/img/no_data.gif')?>" height="128" alt="No_DATA">
     </div>
     <p class="empty-title">Tidak Ada Data</p>
     <p class="empty-subtitle text-muted">
