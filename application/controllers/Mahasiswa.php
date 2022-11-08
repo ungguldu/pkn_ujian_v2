@@ -17,12 +17,16 @@ class Mahasiswa extends MY_Controller
 
     public function jadwal(int $id_jadwal = null)
     {
+        #todo ubah dengan logic krs
         # mahasiswa, ambil data jadwal
         $jadwal_where = [
             'program_studi' => user()->program_studi,
             'tanggal' => date('Y-m-d'),
-            'sesi' => user()->sesi
         ];
+        if ($this->config->item('sesi_ditampilkan') == '1') {
+            $jadwal_where['sesi'] = user()->sesi;
+        }
+
         // jadwal
         if (!$this->session->has_userdata('jadwal_dipilih')) {
             $jadwal = $this->db->get_where('jadwal_ujian', $jadwal_where)->row();
@@ -43,7 +47,7 @@ class Mahasiswa extends MY_Controller
         }
         // upload file jawaban jika sudah
         if (empty($id_jadwal)) {
-            $jawaban = $this->db->get_where('riwayat_upload_jawaban', ['id_jadwal' => $jadwal->id, 'nim' => user()->nim])->row();
+            $jawaban = empty($jadwal) ? null : $this->db->get_where('riwayat_upload_jawaban', ['id_jadwal' => $jadwal->id, 'nim' => user()->nim])->row();
         } else {
             $jawaban = $this->db->get_where('riwayat_upload_jawaban', ['id_jadwal' => $id_jadwal, 'nim' => user()->nim])->row();
         }
@@ -94,7 +98,7 @@ class Mahasiswa extends MY_Controller
                 set_alert('danger', 'Ujian hanya dapat diakses pada waktunya!', 'mahasiswa');
             }
             // encript soal path
-            $filename = $soal->path_file;
+            $filename = (string) $soal->path_file;
             $soal_name = urlencode(base64_encode(samarkan($filename)));
             $soal_utama = site_url('mahasiswa/file/pdf/' . $jadwal->id . '?file=' . $soal_name . '&tipe=masalah#toolbar=0');
             // kunci jadwal dipilih
@@ -145,7 +149,11 @@ class Mahasiswa extends MY_Controller
             $new_pil[$pil] = array_merge($dt, $aksi);
         }
 
-        tampilkan_json($new_pil);
+        if(!empty($new_pil)) { 
+            tampilkan_json($new_pil);
+        } else {
+            show_404();
+        }
     }
 
     /**

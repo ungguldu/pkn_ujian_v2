@@ -7,8 +7,12 @@ class Auth extends CI_Controller
     public function __construct()
     {
         parent::__construct();
-        $this->load->library('authit');
+        $this->load->library(['authit', 'apps_config']);
         $this->load->helper(['authit', 'inflector']);
+
+        // inisiasi config
+        $this->apps_config->apps_config();
+        // form validasi
         $this->form_validation->set_error_delimiters('<div class="invalid-feedback">', '</div>');
         $this->form_validation->set_message('min_length', '{field} minimal {param} karakter.');
         $this->form_validation->set_message('required', '{field} harus diisi!');
@@ -37,7 +41,8 @@ class Auth extends CI_Controller
 
         $this->form_validation->set_rules('nim', 'NIM Mahasiswa', 'trim|required|alpha_numeric|callback_nim_check|xss_clean');
         $this->form_validation->set_rules('pass_key', 'Kode Keamanan', 'trim|required|numeric|max_length[8]|xss_clean');
-        $this->form_validation->set_rules('sesi', 'Kode Keamanan', 'trim|required|is_natural_no_zero|xss_clean');
+
+        $this->config->item('sesi_ditampilkan') == 1 && $this->form_validation->set_rules('sesi', 'Kode Keamanan', 'trim|required|is_natural_no_zero|xss_clean');
 
         if ($this->form_validation->run() == true) {
             $where = [
@@ -46,10 +51,9 @@ class Auth extends CI_Controller
             ];
             $mhs = $this->db->get_where('mahasiswa', $where)->row();
             if (!empty($mhs)) {
-                // load library
                 // loginkan
                 $mhs->role = 'mahasiswa';
-                $mhs->sesi = $this->input->post('sesi', true);
+                $mhs->sesi = $this->config->item('sesi_ditampilkan') == 1 ? $this->input->post('sesi', true) : null;
                 if ($this->authit->login('mahasiswa', $mhs)) {
                     set_alert('success', 'Selamat Datang ' . $mhs->nama_lengkap . ' di portal ujian.', 'mahasiswa');
                 } else {

@@ -14,14 +14,18 @@
         <input type="password" name="pass_key" id="pass_key" class="form-control<?= !empty(form_error('pass_key')) ? ' is-invalid' : ''; ?>" placeholder="masukkan kode keamanan .. " autocomplete="off" value="<?= set_value('pass_key'); ?>">
         <?= form_error('pass_key'); ?>
     </div>
+    <?php if($this->config->item('sesi_ditampilkan') == 1):?>
     <div class="mb-3">
         <div class="form-label">Sesi</div>
         <?php
-        $options = [1 => '1', 2 => '2', 3 => '3', 4 => '4', 5 => '5'];
+        $awal = intval($this->config->item('sesi_awal'));
+        $akhir = intval($this->config->item('sesi_akhir'));
+        $options = array_combine(range($awal, $akhir), range($awal, $akhir));
         echo form_dropdown('sesi', $options, set_value('sesi'), 'class="form-select" name="sesi"');
         echo form_error('sesi');
         ?>
     </div>
+    <?php endif; ?>
     <div class="form-footer">
         <button type="submit" class="btn btn-primary w-100">Mulai Ujian</button>
     </div>
