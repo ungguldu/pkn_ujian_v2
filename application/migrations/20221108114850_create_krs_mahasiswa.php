@@ -25,8 +25,8 @@ class Migration_create_krs_mahasiswa extends CI_Migration
                 'null' => TRUE,
             ),
             'npm' => array(
-                'type' => 'INT',
-                'constraint' => '11',
+                'type' => 'BIGINT',
+                'constraint' => '20',
                 'null' => TRUE,
             ),
             'tanggal_lahir' => array(
