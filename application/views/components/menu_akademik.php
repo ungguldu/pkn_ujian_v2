@@ -29,6 +29,16 @@
             </a>
         </div>
     </li>
+    <li class="nav-item">
+        <a class="nav-link" href="<?= site_url('akademik/kelola_data'); ?>">
+            <span class="nav-link-icon d-md-none d-lg-inline-block">
+                <i class="icon ti ti-file-pencil"></i>
+            </span>
+            <span class="nav-link-title">
+                Kelola Data
+            </span>
+        </a>
+    </li>
     <li class="nav-item dropdown">
         <a class="nav-link dropdown-toggle" href="#navbar-pengawas" data-bs-toggle="dropdown" data-bs-auto-close="outside" role="button" aria-expanded="false">
             <span class="nav-link-icon d-md-none d-lg-inline-block">
@@ -47,16 +57,7 @@
             </a>
         </div>
     </li>
-    <li class="nav-item">
-        <a class="nav-link" href="<?= site_url('akademik/kelola_data'); ?>">
-            <span class="nav-link-icon d-md-none d-lg-inline-block">
-                <i class="icon ti ti-file-pencil"></i>
-            </span>
-            <span class="nav-link-title">
-                Kelola Data
-            </span>
-        </a>
-    </li>
+
     <li class="nav-item dropdown">
         <a class="nav-link dropdown-toggle" href="#navbar-jawaban" data-bs-toggle="dropdown" data-bs-auto-close="outside" role="button" aria-expanded="false">
             <span class="nav-link-icon d-md-none d-lg-inline-block">
