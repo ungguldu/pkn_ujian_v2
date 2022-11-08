@@ -48,9 +48,9 @@ class Migration_create_krs_mahasiswa extends CI_Migration
                 'constraint' => '2',
                 'null' => TRUE,
             ),
-            'periode' => array(
-                'type' => 'INT',
-                'constraint' => '5',
+            'semester' => array(
+                'type' => 'VARCHAR',
+                'constraint' => '20',
                 'null' => TRUE,
             ),
             'bobot_nilai' => array(
