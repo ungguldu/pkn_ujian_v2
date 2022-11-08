@@ -39,6 +39,7 @@
                             <th>Program Studi</th>
                             <th>Mata Kuliah</th>
                             <th>Tanggal Ujian</th>
+                            <th>Mulai Ujian</th>
                             <th>Sesi</th>
                             <th>Durasi</th>
                             <th>Status</th>
@@ -62,9 +63,10 @@
                                 <td><?= $jd->program_studi; ?></td>
                                 <td><?= $jd->mata_kuliah; ?></td>
                                 <td><?= $jd->tanggal; ?></td>
+                                <td><?= $jd->waktu_mulai; ?></td>
                                 <td><?= $jd->sesi; ?></td>
                                 <td>
-                                    <?= $jd->durasi_pengerjaan; ?> 
+                                    <?= $jd->durasi_pengerjaan; ?>
                                     <span class="badge bg-blue-lt btn-edit-durasi fs-6" data-bs-toggle="modal" data-bs-target="#edit_durasi" id="btn-edit-durasi" data-durasi="<?= $jd->durasi_pengerjaan ?? 0; ?>" data-id="<?= $jd->id; ?>">edit durasi</span>
                                 </td>
                                 <?php if (!empty($soal_diupload)) :  ?>
