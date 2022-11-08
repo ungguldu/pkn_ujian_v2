@@ -50,7 +50,6 @@ class Welcome extends MY_Controller
             $data[$i] = ['nama' => $i, 'isi' => $item];
         }
 
-        //tampilkan_json($data);
         if(empty($cek)){
             if(count($data) > 1) {
                 $this->db->insert_batch('apps_setting', $data);
@@ -62,7 +61,9 @@ class Welcome extends MY_Controller
             if(count($data) > 1){
                 $this->db->update_batch('apps_setting', $data, 'nama');
             } else {
-                $this->db->update('apps_setting', $data[$post_name[0]]);
+                $upd = $data[$post_name[0]];
+                unset($upd['nama']);
+                $this->db->update('apps_setting', $upd, ['nama' => $post_name[0]]);
             }
             set_alert('success', 'Setting berhasil diupdate.', $this->agent->referrer() ?? 'welcome');  
         }
