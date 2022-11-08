@@ -39,6 +39,8 @@
                             <th>Program Studi</th>
                             <th>Mata Kuliah</th>
                             <th>Tanggal Ujian</th>
+                            <th>Sesi</th>
+                            <th>Durasi</th>
                             <th>Status</th>
                             <th>Aksi</th>
                         </tr>
@@ -60,6 +62,11 @@
                                 <td><?= $jd->program_studi; ?></td>
                                 <td><?= $jd->mata_kuliah; ?></td>
                                 <td><?= $jd->tanggal; ?></td>
+                                <td><?= $jd->sesi; ?></td>
+                                <td>
+                                    <?= $jd->durasi_pengerjaan; ?> 
+                                    <span class="badge bg-blue-lt btn-edit-durasi fs-6" data-bs-toggle="modal" data-bs-target="#edit_durasi" id="btn-edit-durasi" data-durasi="<?= $jd->durasi_pengerjaan ?? 0; ?>" data-id="<?= $jd->id; ?>">edit durasi</span>
+                                </td>
                                 <?php if (!empty($soal_diupload)) :  ?>
                                     <td class="text-muted">
                                         <span class="badge bg-success me-1"></span> ok
@@ -133,7 +140,6 @@
                                         -
                                     </td>
                                 <?php endif; ?>
-
                             </tr>
                         <?php endforeach; ?>
 
@@ -215,5 +221,31 @@
             </div>
             <div class="modal-body m-0 p-0" style="height: 85vh;" id="box"></div>
         </div>
+    </div>
+</div>
+
+<div class="modal modal-blur fade" id="edit_durasi" tabindex="-1" role="dialog" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <?= form_open('akademik/update_data/jadwal_ujian', 'name="UpdDurasi"', ['id' => '']); ?>
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Update Durasi</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <div class="mb-3">
+                    <label class="form-label">Update durasi</label>
+                    <input type="number" min="0" class="form-control" name="durasi_pengerjaan" id="durasi_pengerjaan" placeholder="100" value="">
+                    <small class="form-hint">
+                        Durasi dalam satuan menit. Isikan 0 untuk menggambil nilai default dari sks.
+                    </small>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn me-auto" data-bs-dismiss="modal">Close</button>
+                <button type="submit" class="btn btn-primary">Save changes</button>
+            </div>
+        </div>
+        <?= form_close(); ?>
     </div>
 </div>

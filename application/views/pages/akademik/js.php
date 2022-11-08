@@ -95,4 +95,17 @@
             f.height = "748";
         }
     })
+
+    const edit_durasi = document.querySelectorAll('.btn-edit-durasi');
+    const durasi_pengerjaaan = document.getElementById('durasi_pengerjaan');
+    const input_id = document.querySelector('input[name=id]');
+
+    edit_durasi.forEach(edit => {
+        edit.addEventListener('click', function() {
+            let durasi = edit.dataset.durasi;
+            let id_val = edit.dataset.id;
+            durasi_pengerjaaan.value = durasi;
+            input_id.value = id_val;
+        })
+    })
 </script>

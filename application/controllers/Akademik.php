@@ -10,10 +10,16 @@ class Akademik extends MY_Controller
     public function __construct()
     {
         parent::__construct();
-        //Do your magic here
+        // batasi user role
         if (user()->role !== 'akademik') {
             show_404();
         }
+        // batasi lanjut jika aplikasi belum disetting
+        if($this->db->count_all_results('apps_setting') < 6) {
+            set_alert('warning', 'Lengkapi setting aplikasi dulu ya min... 😒', 'welcome');
+        }
+        // load config
+        $this->load->config('apps_ujian');
     }
 
     /**
@@ -23,15 +29,17 @@ class Akademik extends MY_Controller
      */
     public function index()
     {
-        $dir = WRITEPATH . 'data' . DIRECTORY_SEPARATOR;
+        $dir = $this->config->item('dir_data');
         $myfiles = substr_replace(glob($dir . '*.xls*'), '', 0, strlen($dir));
         unset($myfiles[0]);
 
         $data = [
             'files' => $myfiles,
+            'krs_mahasiswa' => $this->db->count_all_results('krs_mahasiswa'),
             'jadwal_ujian' => $this->db->count_all_results('jadwal_ujian'),
             'mata_kuliah' => $this->db->count_all_results('mata_kuliah'),
             'mahasiswa' => $this->db->count_all_results('mahasiswa'),
+            'pengawas' => $this->db->count_all_results('pengawas'),
             'page' => 'pages/akademik/index',
         ];
         $this->load->view('template_apps', $data, false);
@@ -43,25 +51,30 @@ class Akademik extends MY_Controller
      * @param string $data
      * @return void
      */
-    public function upload(string $data = null)
+    public function upload()
     {
-        switch ($data) {
+        $kategori_data = $this->input->post('kategori_data');
+        switch ($kategori_data) {
             case 'mahasiswa':
-                $file_name = time() . '_data_' . $data;
+                $file_name = time() . '_data_' . $kategori_data;
                 $table_name = 'mahasiswa';
                 break;
             case 'matkul':
-                $file_name = time() . '_data_' . $data;
+                $file_name = time() . '_data_' . $kategori_data;
                 $table_name = 'mata_kuliah';
                 break;
             case 'jadwal':
-                $file_name = time() . '_data_' . $data;
+                $file_name = time() . '_data_' . $kategori_data;
                 $table_name = 'jadwal_ujian';
                 break;
             case 'pengawas':
-                $file_name = time() . '_data_' . $data;
+                $file_name = time() . '_data_' . $kategori_data;
                 $table_name = 'pengawas';
                 $this->db->query('UPDATE pengawas SET status = 0;');
+                break;
+            case 'krs_mahasiswa':
+                $file_name = time() . '_data_' . $kategori_data;
+                $table_name = 'krs_mahasiswa';
                 break;
             default:
                 set_alert('warning', 'Parameter data tidak ditemukan. Gunakan form tersedia!', 'akademik');
@@ -77,7 +90,7 @@ class Akademik extends MY_Controller
         ];
 
         $this->load->library('upload', $config);
-        if (!$this->upload->do_upload('upload_' . $data)) {
+        if (!$this->upload->do_upload('upload_' . $kategori_data)) {
             $error = $this->upload->display_errors('<span class="text-danger">', '</span>');
             set_alert('danger', 'File gagal diupload. Periksa catatan error berikut: <br/>' . $error, 'akademik');
         } else {
@@ -97,22 +110,29 @@ class Akademik extends MY_Controller
                 $newkey = array_values(array_filter($key));
 
                 $ins = [];
+                $empty_data = [];
                 foreach ($sheetData as $i => $v) {
-                    $ins[$i] = array_combine($newkey, array_values(array_filter($v)));
+                    // samakan panjang array header dan data row
+                    if (!empty($v) and count($newkey) == count(array_filter($v))) {
+                        $ins[$i] = array_combine($newkey, array_values(array_filter($v)));
+                    } else {
+                        $empty_data[$i] = 'data baris ke ' . $i . ' kosong';
+                    }
                 }
+                
                 // spesial buat data mahasiswa yang ada single quote nya
-                if ($data == 'mahasiswa') {
+                if (!empty($ins)) {
                     $ins_new = array_walk_recursive($ins, function (&$value) {
                         $value = htmlspecialchars(trim($value));
                     });
-                    $this->db->insert_batch($table_name, $ins_new, true, 100);
+                    
+                    $this->db->insert_batch($table_name, $ins, true, 500);
                 }
-
-                $this->db->insert_batch($table_name, $ins, true, 100);
-                set_alert('success', 'File berhasil diupload dan data peserta berhasil diimpor ke dalam database.', $this->agent->referrer() ?? 'akademik');
+                //$this->db->insert_batch($table_name, $ins, true, 100);
+                set_alert('success', 'File berhasil diupload dan data '.$kategori_data.' berhasil diimpor ke dalam database. Data kosong sebanyak '. count($empty_data). ' data.', $this->agent->referrer() ?? 'akademik');
             } else {
                 unlink($file);
-                set_alert('danger', 'File berhasil diupload namun data peserta gagal diimpor ke dalam database.', $this->agent->referrer() ?? 'akademik');
+                set_alert('danger', 'File berhasil diupload namun data ' . $kategori_data . ' gagal diimpor ke dalam database.', $this->agent->referrer() ?? 'akademik');
             }
         }
     }
@@ -165,6 +185,41 @@ class Akademik extends MY_Controller
     }
 
     /**
+     * Update data function
+     * untuk keperluan update data
+     * @author Faris Zain - farisz@pknstan.ac.id
+     * @since 2022-11-08 11:11:18
+     * 
+     * @param  string|null $tabel
+     * @return void
+     */
+    public function update_data(string $tabel = null)
+    {
+        $post = $this->input->post();
+        $id = $this->input->post('id', true);
+
+        switch ($tabel) {
+            case 'jadwal_ujian':
+                $this->form_validation->set_rules('durasi_pengerjaan', 'Durasi Pengerjaan', 'trim|is_natural|xss_clean');                
+                if ($this->form_validation->run() == TRUE) {
+                    unset($post['id']);
+                    $this->db->update($tabel, $post, ['id' => $id]);
+                    set_alert('success', 'Data durasi berhasil diupdate', $this->agent->referrer() ?? 'akademik');                   
+                } else {
+                    $err = validation_errors('<code>', '</code><br>');
+                    set_alert('danger', '⛔ Terjadi kesalahan update data. Cek kesalahan berikut: <br>'.$err, $this->agent->referrer() ?? 'akademik');
+                }
+                break;
+            case 'label':
+                # code...
+                break;
+            default:
+                show_404();
+                break;
+        }
+    }
+
+    /**
      * Reset data function
      * adalah fungsi untuk mengosongkan database tabel data yang dipilih
      * @return void
@@ -178,6 +233,34 @@ class Akademik extends MY_Controller
             set_alert('info', 'Data ' . $this->input->post('table', true) . ' berhasil dikosongkan.', 'akademik');
         } else {
             set_alert('info', 'Data ' . $this->input->post('table', true) . ' gagal dikosongkan. Kontak administrator.', 'akademik');
+        }
+    }
+
+    /**
+     * Generate data function
+     * mengimport data dari data KRS mahasiswa, biar tidak banyak upload
+     * @author Faris Zain - farisz@pknstan.ac.id
+     * @since 2022-11-08 16:29:17
+     *
+     * @param  string|null $tabel
+     * @return void
+     */
+    public function generate_data(string $tabel = null)
+    {
+        switch ($tabel) {
+            case 'mahasiswa':
+                $sql = 'INSERT INTO mahasiswa (nama_lengkap, nim, tanggal_lahir, program_studi, kelas) SELECT DISTINCT (nama_lengkap), npm AS nim, tanggal_lahir, program_studi, kelas  FROM krs_mahasiswa GROUP BY npm;';
+                $this->db->query($sql);
+                set_alert('info', 'Data '.$tabel.' berhasil digenerate dari KRS Mahasiswa.', 'akademik');
+                break;
+            case 'mata_kuliah':
+                $sql = 'INSERT INTO mata_kuliah (mata_kuliah, program_studi, kelas, nama_dosen) SELECT mata_kuliah, program_studi, kelas, penilai AS nama_dosen FROM krs_mahasiswa GROUP BY program_studi, mata_kuliah, kelas ORDER BY program_studi, kelas, mata_kuliah';
+                $this->db->query($sql);
+                set_alert('info', 'Data ' . $tabel . ' berhasil digenerate dari KRS Mahasiswa.', 'akademik');
+                break;
+            default:
+                show_404();
+                break;
         }
     }
 

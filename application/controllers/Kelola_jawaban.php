@@ -14,6 +14,12 @@ class Kelola_jawaban extends MY_Controller
         if (user()->role !== 'akademik') {
             redirect('welcome');
         }
+        // batasi lanjut jika aplikasi belum disetting
+        if ($this->db->count_all_results('apps_setting') < 6) {
+            set_alert('warning', 'Lengkapi setting aplikasi dulu ya min... 😒', 'welcome');
+        }
+        // load config
+        $this->load->config('apps_ujian');
     }
 
     public function index()
