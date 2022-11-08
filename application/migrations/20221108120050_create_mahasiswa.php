@@ -19,17 +19,20 @@ class Migration_create_mahasiswa extends CI_Migration
                 'constraint' => '11',
                 'auto_increment' => TRUE,
             ),
-            'nama_lengkap' => array(
-                'type' => 'VARCHAR',
-                'constraint' => '100',
-            ),
-            'tanggal_lahir' => array(
-                'type' => 'DATE',
-            ),
             'nim' => array(
                 'type' => 'VARCHAR',
                 'constraint' => '20',
                 'unique' => TRUE,
+                'null' => TRUE,
+            ),
+            'nama_lengkap' => array(
+                'type' => 'VARCHAR',
+                'constraint' => '150',
+                'null' => TRUE,
+            ),
+            'tanggal_lahir' => array(
+                'type' => 'DATE',
+                'null' => TRUE,
             ),
             'program_studi' => array(
                 'type' => 'VARCHAR',

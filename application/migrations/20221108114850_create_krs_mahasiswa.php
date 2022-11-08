@@ -25,12 +25,12 @@ class Migration_create_krs_mahasiswa extends CI_Migration
                 'null' => TRUE,
             ),
             'npm' => array(
-                'type' => 'BIGINT',
+                'type' => 'VARCHAR',
                 'constraint' => '20',
                 'null' => TRUE,
             ),
             'tanggal_lahir' => array(
-                'type' => 'DATETIME',
+                'type' => 'DATE',
                 'null' => TRUE,
             ),
             'agama' => array(
