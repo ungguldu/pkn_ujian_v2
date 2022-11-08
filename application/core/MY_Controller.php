@@ -10,7 +10,7 @@ class MY_Controller extends CI_Controller
     {
         parent::__construct();
 
-        $this->load->library('authit');
+        $this->load->library(['authit', 'apps_config']);
         $this->load->helper(array('authit', 'tanggal', 'inflector'));
 
         if (!logged_in()) {
@@ -18,6 +18,8 @@ class MY_Controller extends CI_Controller
             $this->session->set_tempdata('redirect', $redirect, 60);
             redirect('auth');
         }
+        // inisiasi config
+        $this->apps_config->apps_config();
 
         /* $settings = $this->settings_model->get_settings();
         $this->settings = new stdClass();

@@ -18,8 +18,6 @@ class Akademik extends MY_Controller
         if($this->db->count_all_results('apps_setting') < 6) {
             set_alert('warning', 'Lengkapi setting aplikasi dulu ya min... 😒', 'welcome');
         }
-        // load config
-        $this->load->config('apps_ujian');
     }
 
     /**
