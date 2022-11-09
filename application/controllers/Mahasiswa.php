@@ -21,11 +21,16 @@ class Mahasiswa extends MY_Controller
     {
         # mahasiswa, ambil data jadwal sesuai krs siswa
         $sesi = ($this->config->item('sesi_ditampilkan') == '1') ? user()->sesi : null;
-        $jadwal_by_krs = $this->Ujian_model->jadwal_by_krs(user()->nim, user()->program_studi, $sesi);
+        // ambil krs matakuliah hari ini
+        $krs = $this->Ujian_model->krs_by_jadwal(user()->nim, $sesi);
+        // ambil jadwal
+        //tampilkan_json($krs);
+        $where_jadwal = !empty($krs) ? ['program_studi' => $krs->program_studi, 'mata_kuliah' => $krs->mata_kuliah, 'semester' => $krs->semester] : null;        
+        $jadwal_ditemukan = !empty($krs) ? $this->db->get_where('jadwal_ujian', $where_jadwal)->row() : null;         
 
         // buat ngecek apakah mahasiswa sudah mengambil ujian atau belum
         if (!$this->session->has_userdata('jadwal_dipilih')) {
-            $jadwal = $jadwal_by_krs;
+            $jadwal = $jadwal_ditemukan;
         } else {
             $jadwal_dipilih = $this->session->userdata('jadwal_dipilih');
             $id_jadwal = $this->session->userdata('id_jadwal');
