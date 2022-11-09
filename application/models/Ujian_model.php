@@ -7,12 +7,12 @@ class Ujian_model extends CI_Model {
         parent::__construct();
     }
 
-    public function jadwal_by_krs(string $npm = null, string $prodi = null, int $sesi = null)
+    public function krs_by_jadwal(string $npm = null, int $sesi = null)
     {
         // konstruksi where
         $sesi =  !empty($sesi) ? ' AND sesi = '.$sesi : '';
         // sql statement
-        $sql = 'SELECT * FROM jadwal_ujian WHERE mata_kuliah IN (SELECT mata_kuliah FROM krs_mahasiswa WHERE npm = \'' . $npm . '\') AND program_studi = \'' . $prodi . '\'  AND tanggal = DATE(NOW())' . $sesi;
+        $sql = 'SELECT * FROM krs_mahasiswa WHERE (program_studi, mata_kuliah, semester) IN (SELECT program_studi, mata_kuliah, semester FROM jadwal_ujian WHERE tanggal = DATE(NOW()) '.$sesi.') AND npm = \''.$npm.'\'';
 
         return $this->db->query($sql)->row();
     }
