@@ -50,7 +50,7 @@ class Migration_create_krs_mahasiswa extends CI_Migration
             ),
             'semester' => array(
                 'type' => 'VARCHAR',
-                'constraint' => '20',
+                'constraint' => '25',
                 'null' => TRUE,
             ),
             'bobot_nilai' => array(

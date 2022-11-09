@@ -47,6 +47,11 @@ class Migration_create_jadwal_ujian extends CI_Migration
                 'constraint' => '3',
                 'null' => TRUE,
             ),
+            'semester' => array(
+                'type' => 'VARCHAR',
+                'constraint' => '25',
+                'null' => TRUE,
+            ),
             'sks' => array(
                 'type' => 'INT',
                 'constraint' => '1',
