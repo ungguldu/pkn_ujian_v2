@@ -9,7 +9,7 @@
 	<meta http-equiv="X-UA-Compatible" content="ie=edge" />
 	<meta name="description" content="Portal Ujian PKN STAN">
 	<meta name="author" content="farisz">
-	<title>Portal Ujian - PKN STAN</title>
+	<title><?= $this->config->item('nama_aplikasi') ?? 'Portal Ujian - PKN STAN' ?></title>
 	<link rel="shortcut icon" href="<?= base_url('assets/favicon.ico'); ?>" type="image/x-icon">
 	<!-- CSS files -->
 	<link href="<?= base_url('assets/'); ?>css/tabler.min.css" rel="stylesheet" />
