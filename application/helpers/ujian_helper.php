@@ -21,7 +21,7 @@ function izinkan_ujian(object|array $jadwal = null)
             break;
     }
 
-    $durasi_ujian = $CI->config->item('durasi_pengumpulan') + $pengerjaan; // dalam menit
+    $durasi_ujian = !empty($jadwal->durasi_pengerjaan) ? $jadwal->durasi_pengerjaan + $CI->config->item('durasi_pengumpulan') : $CI->config->item('durasi_pengumpulan') + $pengerjaan; // dalam menit
     $waktu_akses = date('Y-m-d H:i:s');
     $waktu_ujian = $jadwal->tanggal . ' ' . $jadwal->waktu_mulai;
     $sesi_max = date('Y-m-d H:i:s', strtotime($waktu_ujian . ' + '.$durasi_ujian.' minutes'));
