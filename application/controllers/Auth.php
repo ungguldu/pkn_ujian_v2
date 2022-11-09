@@ -41,8 +41,7 @@ class Auth extends CI_Controller
 
         $this->form_validation->set_rules('nim', 'NIM Mahasiswa', 'trim|required|alpha_numeric|callback_nim_check|xss_clean');
         $this->form_validation->set_rules('pass_key', 'Kode Keamanan', 'trim|required|numeric|max_length[8]|xss_clean');
-
-        $this->config->item('sesi_ditampilkan') == 1 && $this->form_validation->set_rules('sesi', 'Kode Keamanan', 'trim|required|is_natural_no_zero|xss_clean');
+        if($this->config->item('sesi_ditampilkan') == 1) $this->form_validation->set_rules('sesi', 'Kode Keamanan', 'trim|required|is_natural_no_zero|xss_clean');
 
         if ($this->form_validation->run() == true) {
             $where = [
@@ -50,10 +49,15 @@ class Auth extends CI_Controller
                 'tanggal_lahir' => date('Y-m-d', strtotime($this->input->post('pass_key', true)))
             ];
             $mhs = $this->db->get_where('mahasiswa', $where)->row();
+            
             if (!empty($mhs)) {
-                // loginkan
+                // konstruksi data sesi mhs
                 $mhs->role = 'mahasiswa';
-                $mhs->sesi = $this->config->item('sesi_ditampilkan') == 1 ? $this->input->post('sesi', true) : null;
+                // cek konfig sesi
+                if($this->config->item('sesi_ditampilkan') == 1) { 
+                    $mhs->sesi = $this->input->post('sesi', true);
+                };
+                // meloginkan
                 if ($this->authit->login('mahasiswa', $mhs)) {
                     set_alert('success', 'Selamat Datang ' . $mhs->nama_lengkap . ' di portal ujian.', 'mahasiswa');
                 } else {
