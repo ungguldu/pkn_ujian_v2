@@ -1,38 +1,7 @@
 <?php defined('BASEPATH') or exit('No direct script access allowed'); ?>
 
-<?php if ($jadwal_dipilih) : ?>
-    <div class="alert alert-info mb-3" role="alert">
-        <h4 class="alert-title">Sesi Ujian</h4>
-        <div class="text-muted mb-3">Anda hanya dapat mengakses soal ujian selama sesi soal belum berakhir. Sisa sesi soal Anda: <strong id="sisa_sesi"></strong></div>
-        <div class="progress mb-2">
-            <div class="progress-bar" id="sesi_soal" style="width: 100%" role="progressbar" aria-valuenow="100" aria-valuemin="0" aria-valuemax="100" aria-label="10800 detik">
-                <span class="visually-hidden">sisa sesi soal</span>
-            </div>
-        </div>
-    </div>
-    <script>
-        var progres_bar = document.getElementById('sesi_soal');
-        var sisa_menit = document.getElementById('sisa_sesi');
-        var sisa_sesi = <?= $sisa_sesi; ?>;
-        var timer = setInterval(function() {
-            if (sisa_sesi <= 0) {
-                clearInterval(timer);
-            }
-            //progres_bar.style.width = sisa_sesi + "%";
-            progres_bar.style.width = ((sisa_sesi / 10800) * 100) + "%";
-            sisa_menit.textContent = militominute(sisa_sesi * 1000);
-            progres_bar.setAttribute('aria-valuenow', sisa_sesi);
-            progres_bar.setAttribute('aria-label', sisa_sesi + " detik");
-            sisa_sesi -= 1;
-        }, 1000);
+<?php if ($jadwal_dipilih) $this->load->view('pages/mahasiswa/progres_sesi', null, FALSE); ?>
 
-        function militominute(millis) {
-            var minutes = Math.floor(millis / 60000);
-            var seconds = ((millis % 60000) / 1000).toFixed(0);
-            return minutes + " menit " + (seconds < 10 ? '0' : '') + seconds + ' detik';
-        }
-    </script>
-<?php endif; ?>
 <div class="row mb-3">
     <div class="col-12 col-md-8 mb-3">
         <div class="card">
@@ -89,7 +58,6 @@
                             </p>
                         </div>
                     <?php else : ?>
-                        <h3 class="mb-3">Panduan Aplikasi</h3>
                         <div id="faq-1" class="accordion" role="tablist" aria-multiselectable="true">
                             <div class="accordion-item ">
                                 <div class="accordion-header" role="tab">
@@ -134,30 +102,10 @@
                                                     <div class="col-auto mb-2">
                                                         <a href="<?= site_url('mahasiswa/ikut_ujian/reguler/' . $jadwal->id); ?>" class="btn btn-primary w-100">Ya, ikuti ujian ini</a>
                                                     </div>
-                                                    <div class="col-6">
-                                                        <button type="button" class="btn" data-bs-toggle="collapse" data-bs-target="#faq-1-3">Bukan, ini bukan jadwal saya.</button>
-                                                    </div>
                                                 </div>
                                             </div>
                                         <?php endif; ?>
                                         <!-- button -->
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="accordion-item">
-                                <div class="accordion-header" role="tab">
-                                    <button class="accordion-button collapsed" data-bs-toggle="collapse" data-bs-target="#faq-1-3" aria-expanded="false">Tidak menemukan jadwal?</button>
-                                </div>
-                                <div id="faq-1-3" class="accordion-collapse collapse" role="tabpanel" data-bs-parent="#faq-1">
-                                    <div class="accordion-body pt-0">
-                                        <div>
-                                            <p class="m-0">
-                                                Apakah Anda menumpang ujian diprodi lain?
-                                                Jika benar ikuti tautan berikut untuk mencari jadwal Anda <a href="javascript:void(0);" class="btn-link" onclick="genTable();">cari jadwal disini</a>.
-                                            </p>
-                                            <p>Hubungi pengawas atau unit akademik jika jadwal Anda tidak ditemukan.</p>
-                                            <div class="table-responsive" id="jadwal_nebeng"></div>
-                                        </div>
                                     </div>
                                 </div>
                             </div>
@@ -273,64 +221,8 @@
         </div>
     </div>
 <?php endif; ?>
-<script>
-    async function getData() {
-        let url = '<?= site_url('mahasiswa/nebeng_ujian'); ?>';
-        try {
-            let res = await fetch(url);
-            return await res.json();
-        } catch (error) {
-            console.log(error);
-        }
-    }
-
-    async function genTable() {
-
-        let jadwal_nebeng = await getData();
-        console.log(jadwal_nebeng);
-        // EXTRACT VALUE FOR HTML HEADER.
-        // ('Book ID', 'Book Name', 'Category' and 'Price')
-        var col = [];
-        for (var i = 0; i < jadwal_nebeng.length; i++) {
-            for (var key in jadwal_nebeng[i]) {
-                if (col.indexOf(key) === -1) {
-                    col.push(key);
-                }
-            }
-        }
-        // CREATE DYNAMIC TABLE.
-        var divContainer = document.getElementById("jadwal_nebeng");
-        divContainer.innerHTML = '<div class="spinner-border text-blue" role="status"></div>';
-
-        var table = document.createElement("table");
-        table.classList.add('table');
-        table.classList.add('table-vcenter');
-        // CREATE HTML TABLE HEADER ROW USING THE EXTRACTED HEADERS ABOVE.
-        var tr = table.insertRow(-1); // TABLE ROW.
-
-        for (var i = 0; i < col.length; i++) {
-            var th = document.createElement("th"); // TABLE HEADER.
-            th.innerHTML = humanize(col[i]);
-            tr.appendChild(th);
-        }
-
-        // ADD JSON DATA TO THE TABLE AS ROWS.
-        for (var i = 0; i < jadwal_nebeng.length; i++) {
-
-            tr = table.insertRow(-1);
-
-            for (var j = 0; j < col.length; j++) {
-                var tabCell = tr.insertCell(-1);
-                tabCell.innerHTML = jadwal_nebeng[i][col[j]];
-            }
-        }
-
-        // FINALLY ADD THE NEWLY CREATED TABLE WITH JSON DATA TO A CONTAINER.
-
-        divContainer.innerHTML = '';
-        divContainer.appendChild(table);
-    }
-    <?php if (!empty($jawaban)) : ?>
+<?php if (!empty($jawaban)) : ?>
+    <script>
         var kunci_jawaban = document.getElementById('kunci_jawaban');
         kunci_jawaban.addEventListener('click', function() {
             var uri = kunci_jawaban.getAttribute('data-uri');
@@ -341,5 +233,5 @@
                 return;
             }
         })
-    <?php endif; ?>
-</script>
+    </script>
+<?php endif; ?>

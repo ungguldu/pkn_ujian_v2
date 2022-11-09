@@ -7,7 +7,9 @@ class Mahasiswa extends MY_Controller
     public function __construct()
     {
         parent::__construct();
-        //Do your magic here
+        $this->load->model('Ujian_model');
+        $this->load->helper('ujian_helper');
+        
     }
 
     public function index()
@@ -17,54 +19,41 @@ class Mahasiswa extends MY_Controller
 
     public function jadwal(int $id_jadwal = null)
     {
-        #todo ubah dengan logic krs
-        # mahasiswa, ambil data jadwal
-        $jadwal_where = [
-            'program_studi' => user()->program_studi,
-            'tanggal' => date('Y-m-d'),
-        ];
-        if ($this->config->item('sesi_ditampilkan') == '1') {
-            $jadwal_where['sesi'] = user()->sesi;
-        }
+        # mahasiswa, ambil data jadwal sesuai krs siswa
+        $sesi = ($this->config->item('sesi_ditampilkan') == '1') ? user()->sesi : null;
+        $jadwal_by_krs = $this->Ujian_model->jadwal_by_krs(user()->nim, user()->program_studi, $sesi);
 
-        // jadwal
+        // buat ngecek apakah mahasiswa sudah mengambil ujian atau belum
         if (!$this->session->has_userdata('jadwal_dipilih')) {
-            $jadwal = $this->db->get_where('jadwal_ujian', $jadwal_where)->row();
+            $jadwal = $jadwal_by_krs;
         } else {
             $jadwal_dipilih = $this->session->userdata('jadwal_dipilih');
             $id_jadwal = $this->session->userdata('id_jadwal');
+            // mode ujian , harusnya sudah ga perlu
             $mode = $this->session->userdata('mode');
             $jadwal = $this->db->get_where('jadwal_ujian', ['id' => $id_jadwal])->row();
-
-            // sesi soal = sesi max
-            $sesi_soal = strtotime($jadwal->tanggal . ' ' . $jadwal->waktu_mulai . '+ 210 minutes') - time();
-            if (empty($this->session->userdata('sesi_soal'))) {
-                $this->session->set_userdata('sesi_soal', $sesi_soal);
-            } else {
-                $this->session->unset_userdata('sesi_soal');
-                $this->session->set_userdata('sesi_soal', $sesi_soal);
-            }
         }
-        // upload file jawaban jika sudah
+        // cek file upload jawaban jika sudah
         if (empty($id_jadwal)) {
-            $jawaban = empty($jadwal) ? null : $this->db->get_where('riwayat_upload_jawaban', ['id_jadwal' => $jadwal->id, 'nim' => user()->nim])->row();
+            $jawaban = !empty($jadwal) ? $this->db->get_where('riwayat_upload_jawaban', ['id_jadwal' => $jadwal->id, 'nim' => user()->nim])->row() : null;
         } else {
             $jawaban = $this->db->get_where('riwayat_upload_jawaban', ['id_jadwal' => $id_jadwal, 'nim' => user()->nim])->row();
         }
-        // perlu di test
+        // jika jawaban tidak kosong dan sudah dikunci maka logoukan
         if (!empty($jawaban) and $jawaban->kunci_jawaban == 1) {
-            redirect('auth/logout');
+            $this->authit->logout('auth/mahasiswa');
         }
 
-        $data = [
+        $data = [            
             'mode' => !empty($mode) ? $mode : 'reguler',
             'jadwal_dipilih' => !empty($jadwal_dipilih) ? $jadwal_dipilih : false,
             'sisa_sesi' => $this->session->userdata('sesi_soal') ?: 0,
+            'durasi_ujian' => $this->session->userdata('durasi_ujian') ?: 0,
             'jadwal' => $jadwal,
             'jawaban' => $jawaban,
             'page' => 'pages/mahasiswa/welcome',
         ];
-        //tampilkan_json($data);
+        //tampilkan_json($this->Ujian_model->krs_mahasiswa(user()->nim));
         $this->load->view('template_apps', $data ?? null, false);
     }
 
@@ -83,20 +72,18 @@ class Mahasiswa extends MY_Controller
         if (!in_array($mode, $avail_mode) or empty($id)) {
             set_alert('warning', 'Parameter data tidak cocok!', 'mahasiswa');
         }
-        // ambil jadwal dan soal ujian
+        // ambil jadwal
         $jadwal = $this->db->get_where('jadwal_ujian', ['id' => $id])->row();
+        // batasi akses sesuai tanggal dan jam
+        $izinkan = izinkan_ujian($jadwal);
+        // alihkan jika false
+        if ($izinkan['izinkan'] === false) {
+            set_alert('danger', 'Ujian hanya dapat diakses pada waktunya!', 'mahasiswa');
+        }
+        // ambil soal
         $soal = $this->db->get_where('soal_ujian', ['id_jadwal' => $id])->row();
 
-        if (!empty($soal)) {
-            // batasi akses sesuai tanggal dan jam
-            $waktu_akses = date('Y-m-d H:i:s');
-            $waktu_ujian = $jadwal->tanggal . ' ' . $jadwal->waktu_mulai;
-            $sesi_max = date('Y-m-d H:i:s', strtotime($waktu_ujian . ' + 210 minutes'));
-            $izinkan = ($waktu_akses > $waktu_ujian and $waktu_akses < $sesi_max) ? true : false;
-            // alihkan jika false
-            if ($izinkan === false) {
-                set_alert('danger', 'Ujian hanya dapat diakses pada waktunya!', 'mahasiswa');
-            }
+        if (!empty($soal)) {            
             // encript soal path
             $filename = (string) $soal->path_file;
             $soal_name = urlencode(base64_encode(samarkan($filename)));
@@ -108,13 +95,17 @@ class Mahasiswa extends MY_Controller
                 $this->session->set_userdata($jadwal_dipilih);
             }
 
+            // seting durasi ujian ke sesi agar dapat diambil dari halaman lain
+            $durasi_ujian = $izinkan['durasi_ujian'];
+            $this->session->set_userdata('durasi_ujian', $durasi_ujian);
             // sesi soal = sesi max
-            $sesi_soal = strtotime($sesi_max) - strtotime($waktu_akses);
+            $sisa_sesi = $izinkan['sisa_sesi'];
             if (empty($this->session->userdata('sesi_soal'))) {
-                $this->session->set_userdata('sesi_soal', $sesi_soal);
+                $this->session->set_userdata('sesi_soal', $sisa_sesi);
             } else {
+                // update sesi
                 $this->session->unset_userdata('sesi_soal');
-                $this->session->set_userdata('sesi_soal', $sesi_soal);
+                $this->session->set_userdata('sesi_soal', $sisa_sesi);
             }
         } else {
             set_alert('warning', 'Soal ujian belum diupload. Hubungi petugas!', 'mahasiswa');
@@ -126,13 +117,14 @@ class Mahasiswa extends MY_Controller
             'soal' => $soal,
             'mode' => $mode,
             'sisa_sesi' => $this->session->userdata('sesi_soal'),
+            'durasi_ujian' => $izinkan['durasi_ujian'],
             'jadwal' => $jadwal
         ];
 
         $this->load->view('template_apps', $data ?? null, false);
     }
 
-    public function nebeng_ujian()
+    /* public function nebeng_ujian()
     {
         // ambil seluruh prodi dan matkul
         $this->db->where('tanggal', date('Y-m-d'));
@@ -154,7 +146,7 @@ class Mahasiswa extends MY_Controller
         } else {
             show_404();
         }
-    }
+    } */
 
     /**
      * File Soal Ujian function
@@ -166,7 +158,8 @@ class Mahasiswa extends MY_Controller
         $file = $this->input->get('file', true);
         $jenis_file = $this->input->get('tipe', true);
         $jadwal = $this->db->get_where('jadwal_ujian', ['id' => $id_jadwal])->row();
-        $izinkan = !(time() > strtotime($jadwal->tanggal . ' ' . $jadwal->waktu_mulai . '+ 210 minutes'));
+        $akses = izinkan_ujian($jadwal);
+        $izinkan = $akses['izinkan'];
 
         if (empty($file) or empty($id_jadwal) or !in_array($jenis_file, ['masalah', 'jawaban']) or !$izinkan) {
             return $this->load->view('template_apps', ['page' => 'pages/404'], false);
@@ -186,8 +179,6 @@ class Mahasiswa extends MY_Controller
         $this->load->helper('download');
 
         $mimes = ['video/mp4', 'video/mpeg', 'application/vnd.ms-powerpoint', 'application/vnd.openxmlformats-officedocument.presentationml.presentation', 'application/vnd.ms-excel', 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet', 'application/zip', 'application/x-zip', 'application/pdf'];
-
-
 
         switch ($mime) {
             case 'video':
@@ -248,9 +239,9 @@ class Mahasiswa extends MY_Controller
         $this->form_validation->set_rules('mata_kuliah', 'Mata Kuliah', 'trim|required|alpha_dash|xss_clean');
         $this->form_validation->set_rules('program_studi', 'Program Studi', 'trim|required|xss_clean');
 
-        $kelas = $this->input->post('kelas', true);
-        $mat_kul = $this->input->post('mata_kuliah', true);
-        $prodi = str_replace('/', '_', $this->input->post('program_studi', true));
+        $kelas = nama_file_folder($this->input->post('kelas', true));
+        $mat_kul = nama_file_folder($this->input->post('mata_kuliah', true));
+        $prodi = nama_file_folder($this->input->post('program_studi', true));
         $nim = $this->input->post('nim', true);
         $id_jadwal = $this->input->post('id_jadwal', true);
 
@@ -262,6 +253,7 @@ class Mahasiswa extends MY_Controller
             $dir_reguler = $base_upl_dir . $prodi . DIRECTORY_SEPARATOR . $mat_kul . DIRECTORY_SEPARATOR . $kelas . DIRECTORY_SEPARATOR;
             // dir nebeng/program_studi/mata_kuliah/id
             $dir_nebeng = $base_upl_dir . DIRECTORY_SEPARATOR . 'nebeng' . DIRECTORY_SEPARATOR . $prodi . DIRECTORY_SEPARATOR . $mat_kul . DIRECTORY_SEPARATOR;
+
             if ($mode == 'nebeng') {
                 $dir_jawaban = $dir_nebeng;
             } else {
@@ -390,11 +382,11 @@ class Mahasiswa extends MY_Controller
         }
         $this->db->update('riwayat_upload_jawaban', ['kunci_jawaban' => 1], ['id' => $id_riwayat_jawaban]);
         // ambil kuisioner jika belum
-        $kuisi = $this->db->get_where('kuisioner', ['nim' => user()->nim])->row();
+        /* $kuisi = $this->db->get_where('kuisioner', ['nim' => user()->nim])->row();
         if (empty($kuisi)) {
             set_alert('info', 'Jawaban berhasil dikunci dan kami mohon bantuan isi kuisioner ya. pliiisss.. 😊', 'mahasiswa/kuisioner');
-        }
-        redirect('auth/logout');
+        } */
+        $this->authit->logout('auth/mahasiswa');
     }
 }
 
