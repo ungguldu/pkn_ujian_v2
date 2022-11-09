@@ -269,7 +269,7 @@ class Akademik extends MY_Controller
      */
     public function kelola_data(string $tabel = 'mahasiswa')
     {
-        $list_table = ['mahasiswa', 'mata_kuliah', 'jadwal_ujian', 'soal_ujian', 'riwayat_upload_jawaban', 'riwayat_kirim_jawaban'];
+        $list_table = ['krs_mahasiswa', 'mahasiswa', 'mata_kuliah', 'jadwal_ujian', 'soal_ujian', 'riwayat_upload_jawaban', 'riwayat_kirim_jawaban'];
         if (!in_array($tabel, $list_table)) {
             set_alert('warning', 'Parameter tampilkan data tidak valid!', 'akademik/kelola_data');
         }
@@ -584,7 +584,7 @@ class Akademik extends MY_Controller
                     set_alert('success', 'Data pengawas berhasil ditambah', 'akademik/pengawas/tambah');
                 } else {
 
-                    $prod_kel = $this->db->query('SELECT program_studi, kelas FROM `mahasiswa` GROUP BY program_studi, kelas ORDER BY program_studi ASC;')->result_array();
+                    $prod_kel = $this->db->query('SELECT program_studi, kelas FROM `krs_mahasiswa` GROUP BY program_studi, kelas ORDER BY program_studi ASC;')->result_array();
                     $jadwal = $this->db->query('SELECT id, CONCAT(tanggal, \' \', waktu_mulai) as waktu, sesi, program_studi, mata_kuliah FROM `jadwal_ujian` ORDER BY `id` ASC;')->result_array();
 
                     $kelas_by_prodi = _group_by($prod_kel, 'program_studi');
@@ -626,7 +626,7 @@ class Akademik extends MY_Controller
                     set_alert('success', 'Data pengawas berhasil diperbarui.', 'akademik/pengawas');
                 } else {
 
-                    $prod_kel = $this->db->query('SELECT program_studi, kelas FROM `mahasiswa` GROUP BY program_studi, kelas ORDER BY program_studi ASC;')->result_array();
+                    $prod_kel = $this->db->query('SELECT program_studi, kelas FROM `krs_mahasiswa` GROUP BY program_studi, kelas ORDER BY program_studi ASC;')->result_array();
                     $jadwal = $this->db->query('SELECT id, CONCAT(tanggal, \' \', waktu_mulai) as waktu, sesi, program_studi, mata_kuliah FROM `jadwal_ujian` ORDER BY `id` ASC;')->result_array();
                     $opt_prodi = ['' => 'pilih program studi'];
 

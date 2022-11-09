@@ -38,6 +38,7 @@
                             <th class="w-1">No.</th>
                             <th>Program Studi</th>
                             <th>Mata Kuliah</th>
+                            <th>Semester</th>
                             <th>Tanggal Ujian</th>
                             <th>Mulai Ujian</th>
                             <th>Sesi</th>
@@ -62,6 +63,7 @@
                                 <td><span class="text-muted"><?= ++$start; ?></span></td>
                                 <td><?= $jd->program_studi; ?></td>
                                 <td><?= $jd->mata_kuliah; ?></td>
+                                <td><?= $jd->semester; ?></td>
                                 <td><?= $jd->tanggal; ?></td>
                                 <td><?= $jd->waktu_mulai; ?></td>
                                 <td><?= $jd->sesi; ?></td>
