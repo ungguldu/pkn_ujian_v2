@@ -19,7 +19,6 @@
                             <option value="" selected="">pilih kategori ..</option>
                             <?= empty($krs_mahasiswa) ? '<option value="krs_mahasiswa">KRS Mahasiswa</option>' : ''; ?>
                             <option value="jadwal">Jadwal</option>
-                            <option value="mahasiswa">Mahasiswa</option>
                         </select>
                     </div>
                     <div class="mb-3 col-sm-6 col-md-8">
@@ -127,11 +126,6 @@
                                         <?php endif ?>
                                     </td>
                                 <?php endif; ?>
-                            </tr>
-                            <tr class="<?= empty($pengawas) ? 'bg-red-lt' : 'bg-green-lt' ?>">
-                                <td>Pengawas</td>
-                                <td><?= $pengawas; ?></td>
-                                <td></td>
                             </tr>
                         </tbody>
                     </table>

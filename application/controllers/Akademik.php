@@ -37,7 +37,6 @@ class Akademik extends MY_Controller
             'jadwal_ujian' => $this->db->count_all_results('jadwal_ujian'),
             'mata_kuliah' => $this->db->count_all_results('mata_kuliah'),
             'mahasiswa' => $this->db->count_all_results('mahasiswa'),
-            'pengawas' => $this->db->count_all_results('pengawas'),
             'page' => 'pages/akademik/index',
         ];
         $this->load->view('template_apps', $data, false);
@@ -249,12 +248,12 @@ class Akademik extends MY_Controller
             case 'mahasiswa':
                 $sql = 'INSERT INTO mahasiswa (nama_lengkap, nim, tanggal_lahir, program_studi, kelas) SELECT DISTINCT (nama_lengkap), npm AS nim, tanggal_lahir, program_studi, kelas  FROM krs_mahasiswa GROUP BY npm;';
                 $this->db->query($sql);
-                set_alert('info', 'Data '.$tabel.' berhasil digenerate dari KRS Mahasiswa.', 'akademik');
+                set_alert('info', 'Data '.humanize($tabel).' berhasil digenerate dari KRS Mahasiswa.', 'akademik');
                 break;
             case 'mata_kuliah':
                 $sql = 'INSERT INTO mata_kuliah (mata_kuliah, program_studi, kelas, nama_dosen) SELECT mata_kuliah, program_studi, kelas, penilai AS nama_dosen FROM krs_mahasiswa GROUP BY program_studi, mata_kuliah, kelas ORDER BY program_studi, kelas, mata_kuliah';
                 $this->db->query($sql);
-                set_alert('info', 'Data ' . $tabel . ' berhasil digenerate dari KRS Mahasiswa.', 'akademik');
+                set_alert('info', 'Data ' . humanize($tabel) . ' berhasil digenerate dari KRS Mahasiswa.', 'akademik');
                 break;
             default:
                 show_404();
