@@ -8,7 +8,7 @@ class Auth extends CI_Controller
     {
         parent::__construct();
         $this->load->library(['authit', 'apps_config']);
-        $this->load->helper(['authit', 'inflector']);
+        $this->load->helper(['authit', 'inflector', 'ujian_helper']);
 
         // inisiasi config
         $this->apps_config->apps_config();
@@ -127,12 +127,11 @@ class Auth extends CI_Controller
             }
             // cek jadwal
             $jadwal = $this->db->get_where('jadwal_ujian', ['id' => $user->id_jadwal])->row();
-            $waktu_ujian = strtotime($jadwal->tanggal . ' ' . $jadwal->waktu_mulai);
-            $max_login = $waktu_ujian + 12600; // tambah 3.5jam
-            $waktu_login = time();
+            $akses = izinkan_ujian($jadwal);
 
+            //tampilkan_json($akses);
             // batasi login
-            if ($waktu_login > $max_login) {
+            if ($akses['izinkan'] == false) {
                 set_alert('warning', 'Ujian telah berakhir. Anda tidak diizinkan login!', 'auth/pengawas');
             }
             // loginkan user

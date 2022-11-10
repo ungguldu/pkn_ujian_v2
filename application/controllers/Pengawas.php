@@ -76,7 +76,8 @@ class Pengawas extends MY_Controller
         $file = $this->input->get('file', true);
         $jenis_file = $this->input->get('tipe', true);
         $jadwal = $this->db->get_where('jadwal_ujian', ['id' => $id_jadwal])->row();
-        $izinkan = !(time() > strtotime($jadwal->tanggal . ' ' . $jadwal->waktu_mulai . '+ 210 minutes') or time() < strtotime($jadwal->tanggal . ' ' . $jadwal->waktu_mulai));
+        $akses = izinkan_ujian($jadwal);
+        $izinkan = $akses['izinkan'];
 
         if (empty($file) or empty($id_jadwal) or !in_array($jenis_file, ['masalah', 'jawaban']) or !$izinkan) {
             return $this->load->view('template_apps', ['page' => 'pages/404'], false);
