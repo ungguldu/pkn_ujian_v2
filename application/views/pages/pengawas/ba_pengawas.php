@@ -169,7 +169,7 @@ color: #1e1e1e;" bgcolor="#fefefe" text="#1e1e1e">
                                     <dt>Gedung/Ruang</dt>
                                     <dd> <?= $post['ruang']; ?></dd>
                                     <dt>Telah Diselenggarakan Ujian</dt>
-                                    <dd> Ujian Akhir Semester (UAS) Genap Tahun Akademik 2021/2022</dd>
+                                    <dd><?= $nama_ujian ?? 'Tes BA ujian - Portal Ujian PKN STAN' ?></dd>
                                     <dt>Program Studi</dt>
                                     <dd> <?= $post['program_studi']; ?></dd>
                                     <dt>Mata Kuliah</dt>

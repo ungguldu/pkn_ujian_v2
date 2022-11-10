@@ -28,7 +28,7 @@
                             </tr>
                             <tr>
                                 <td>Telah Diselenggarakan Ujian</td>
-                                <td>Ujian Akhir Semester (UAS) Genap Tahun Akademik 2021/2022</td>
+                                <td><?= $nama_ujian ?? 'Tes Ujian Portal Ujian '.date('Y'); ?></td>
                             </tr>
                             <tr>
                                 <td>Program Studi</td>

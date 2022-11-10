@@ -10,7 +10,11 @@
             <div class="row my-3 g-1">
                 <div class="col"></div>
                 <div class="col-3">
+                    <?php if($soal): ?>
                     <a href="<?= $soal_utama; ?>" target="_blank" class="btn w-100" rel="noreferrer noopener">Soal Ujian</a>
+                    <?php else: ?>
+                    <button class="btn w-100 btn-warning">Soal Belum Diupload!</button>
+                    <?php endif; ?>
                 </div>
                 <div class="col-auto">
                     <a href="<?= site_url('pengawas/laporan'); ?>" class="btn btn-primary w-100" id="btn_BA">Buat Berita Acara Pengawas Ujian</a>
@@ -34,10 +38,10 @@
                         foreach ($mhs as $mh) : ?>
                             <tr>
                                 <td><?= $a++; ?></td>
-                                <td><?= $mh->nim; ?></td>
+                                <td><?= $mh->npm; ?></td>
                                 <td><?= $mh->nama_lengkap; ?></td>
                                 <td><?= $mh->kelas; ?></td>
-                                <?php $sudah = $jawaban[$mh->nim] ?? false; ?>
+                                <?php $sudah = $jawaban[$mh->npm] ?? false; ?>
                                 <td>
                                     <?php if ($sudah) : $file = explode('/', $sudah[0]['file_path']); ?>
                                         <i class="icon ti ti-file text-primary me-1"></i>

@@ -22,6 +22,7 @@ class Pengawas extends MY_Controller
         if (user()->role != 'pengawas') {
             redirect('welcome');
         }
+        $this->load->helper('ujian_helper');
     }
 
     public function index()
@@ -35,10 +36,10 @@ class Pengawas extends MY_Controller
         $soal_name = ($filename !== false) ? urlencode(base64_encode(samarkan($filename))) : false;
         $soal_utama = ($soal_name !== false) ? site_url('pengawas/file/pdf/' . $jadwal->id . '?file=' . $soal_name . '&tipe=masalah#toolbar=0') : '#';
         // mahasiswa pada prodi kelas
-        $mhs = $this->db->get_where('mahasiswa', ['program_studi' => user()->program_studi, 'kelas' => user()->kelas])->result();
+        $mhs = $this->db->get_where('krs_mahasiswa', ['program_studi' => user()->program_studi, 'mata_kuliah' => $jadwal->mata_kuliah, 'kelas' => user()->kelas])->result();
         // jawabanayat upload
-        $this->db->where_in('kelas', [underscore(user()->kelas), 'nebeng']);
-        $this->db->where(['program_studi' => underscore(str_replace('/', '_', $jadwal->program_studi)), 'mata_kuliah' => underscore($jadwal->mata_kuliah)]);
+        $this->db->where('kelas', nama_file_folder(user()->kelas));
+        $this->db->where(['program_studi' => nama_file_folder($jadwal->program_studi), 'mata_kuliah' => nama_file_folder($jadwal->mata_kuliah)]);
         $riw = $this->db->get('riwayat_upload_jawaban')->result_array();
 
 
@@ -148,13 +149,14 @@ class Pengawas extends MY_Controller
     {
         $jadwal = $this->db->get_where('jadwal_ujian', ['id' => user()->id_jadwal])->row();
         // mahasiswa pada prodi kelas
-        $mhs = $this->db->get_where('mahasiswa', ['program_studi' => user()->program_studi, 'kelas' => user()->kelas])->result();
+        $mhs = $this->db->get_where('krs_mahasiswa', ['program_studi' => user()->program_studi, 'mata_kuliah' => $jadwal->mata_kuliah, 'kelas' => user()->kelas])->result();
         // jawabanayat upload
-        $this->db->where_in('kelas', [user()->kelas, 'nebeng']);
-        $this->db->where(['program_studi' => underscore(str_replace('/', '_', $jadwal->program_studi)), 'mata_kuliah' => underscore($jadwal->mata_kuliah)]);
+        $this->db->where('kelas', nama_file_folder(user()->kelas));
+        $this->db->where(['program_studi' => nama_file_folder($jadwal->program_studi), 'mata_kuliah' => nama_file_folder($jadwal->mata_kuliah)]);
         $riw = $this->db->get('riwayat_upload_jawaban')->result();
         $data = [
             'jadwal' => $jadwal,
+            'nama_ujian' => $this->config->item('nama_ujian'),
             'jum_mhs' => !empty($mhs) ? count($mhs) : 0,
             'jum_jawaban' => !empty($riw) ? count($riw) : 0,
             'page' => 'pages/pengawas/laporan',
@@ -181,11 +183,12 @@ class Pengawas extends MY_Controller
             $qr = $this->_gen_qr(user()->nik);
             $data = [
                 'qr' => $qr,
+                'nama_ujian' => $this->config->item('nama_ujian'),
                 'jadwal' => $jadwal,
                 'post' => $this->input->post()
             ];
 
-            $html = $this->load->view('pages/pengawas/ba_pengawas_sertifikasi', $data, true);
+            $html = $this->load->view('pages/pengawas/ba_pengawas', $data, true);
 
             $dompdf = new Dompdf();
             $dompdf->loadHtml($html);
@@ -198,11 +201,14 @@ class Pengawas extends MY_Controller
             } else {
                 //return $dompdf->output();
                 $output = $dompdf->output();
-                $dir_file = WRITEPATH . 'BA' . DIRECTORY_SEPARATOR . $jadwal->sesi;
+                $base_ba = $this->config->item('dir_BA');
+                $dir_file = $base_ba. $jadwal->sesi;
+                // cek folder
                 if (!is_dir(realpath($dir_file))) {
                     mkdir($dir_file, 755, true);
                 }
-                $nama_file = WRITEPATH . 'BA' . DIRECTORY_SEPARATOR . $jadwal->sesi . DIRECTORY_SEPARATOR . underscore(str_replace('/', '_', $jadwal->program_studi)) . '_' . underscore(user()->kelas) . '_' . underscore($jadwal->mata_kuliah) . '_' . underscore(user()->nama_lengkap) . '.pdf';
+                // siapkan file dengan filenamenya
+                $nama_file = $dir_file . DIRECTORY_SEPARATOR . nama_file_folder($jadwal->program_studi) . '_' . nama_file_folder(user()->kelas) . '_' . nama_file_folder($jadwal->mata_kuliah) . '_' . nama_file_folder(user()->nama_lengkap) . '.pdf';
 
                 file_put_contents($nama_file, $output);
             }
@@ -236,7 +242,8 @@ class Pengawas extends MY_Controller
             }
             // akhir data
             $data['akhir'] = true;
-            $this->load->view('pages/pengawas/ba_pengawas_sertifikasi', $data, FALSE);
+            $data['nama_ujian'] = $this->config->item('nama_ujian');
+            $this->load->view('pages/pengawas/ba_pengawas', $data, FALSE);
         } else {
             $err = validation_errors('<span class="text-danger small">', '</span><br>');
             set_alert('warning', 'Data berita acara pengawas tidak valid. Cek kesalahan berikut: <br>' . $err, $this->agent->referrer() ?? 'pengawas/laporan');
