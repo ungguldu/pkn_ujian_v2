@@ -76,7 +76,7 @@ class Pengawas extends MY_Controller
         $file = $this->input->get('file', true);
         $jenis_file = $this->input->get('tipe', true);
         $jadwal = $this->db->get_where('jadwal_ujian', ['id' => $id_jadwal])->row();
-        $akses = izinkan_ujian($jadwal);
+        $akses = izinkan_ujian($jadwal, -15); // reques mas fahrizal
         $izinkan = $akses['izinkan'];
 
         if (empty($file) or empty($id_jadwal) or !in_array($jenis_file, ['masalah', 'jawaban']) or !$izinkan) {
