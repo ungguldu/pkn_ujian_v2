@@ -33,5 +33,5 @@ function izinkan_ujian(object|array $jadwal = null)
 function nama_file_folder(string $str = null)
 {
     if(empty($str)) return false;
-    return str_replace(['.', '\'', '(', ')', ':', '/', '-', ',', ' '], '_', $str);
+    return strtolower(str_replace(['.', '\'', '(', ')', ':', '/', '-', ',', ' '], '_', $str));
 }
