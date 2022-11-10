@@ -40,7 +40,7 @@
                         </div>
                         <div class="row my-3">
                             <div class="col-auto">
-                                <a href="<?= site_url('mahasiswa/ikut_ujian/' . $mode . '/' . $jadwal->id); ?>" class="btn btn-primary me-1">Lihat Soal</a>
+                                <a href="<?= site_url('mahasiswa/ikut_ujian/' . $mode . '/' . $jadwal->id.'/'.$krs->id); ?>" class="btn btn-primary me-1">Lihat Soal</a>
                             </div>
                             <div class="col-auto">
                                 <button type="button" class="btn" data-bs-toggle="modal" data-bs-target="#modal_upl_jawaban">
@@ -100,8 +100,15 @@
                                                 <label class="form-label">Benar jadwal Anda?</label>
                                                 <div class="row">
                                                     <div class="col-auto mb-2">
-                                                        <a href="<?= site_url('mahasiswa/ikut_ujian/reguler/' . $jadwal->id); ?>" class="btn btn-primary w-100">Ya, ikuti ujian ini</a>
+                                                        <a href="<?= site_url('mahasiswa/ikut_ujian/reguler/' . $jadwal->id . '/' . $krs->id); ?>" class="btn btn-primary w-100">Ya, ikuti ujian ini</a>
                                                     </div>
+                                                    <?php if (!empty($jawaban)) : ?>
+                                                        <div class="col-auto">
+                                                            <button type="button" class="btn" data-bs-toggle="modal" data-bs-target="#modal_upl_jawaban">
+                                                                Upload Jawaban
+                                                            </button>
+                                                        </div>
+                                                    <?php endif; ?>
                                                 </div>
                                             </div>
                                         <?php endif; ?>
@@ -131,7 +138,11 @@
                         </div>
                         <div class="mb-2">
                             <i class="icon ti ti-briefcase me-2 text-muted"></i>
-                            Kelas: <strong><?= user()->kelas; ?></strong>
+                            Kelas Asal: <strong><?= user()->kelas; ?></strong>
+                        </div>
+                        <div class="mb-2">
+                            <i class="icon ti ti-book text-teal me-2 text-muted"></i>
+                            Kelas KRS: <strong><?= $krs->kelas; ?></strong>
                         </div>
                     </div>
                 </div>
@@ -179,7 +190,7 @@
         </div>
     </div>
 </div>
-<?php if ($jadwal_dipilih) : ?>
+<?php if ($jadwal_dipilih or !empty($jawaban)) : ?>
     <div class="modal modal-blur fade" id="modal_upl_jawaban" tabindex="-1" role="dialog" aria-hidden="true">
         <div class="modal-dialog modal-dialog-centered" role="document">
             <div class="modal-content">
@@ -197,9 +208,9 @@
                         // upload reguler
                         $hidden = [
                             'nim' => user()->nim,
-                            'kelas' => underscore(user()->kelas),
-                            'mata_kuliah' => underscore($jadwal->mata_kuliah),
-                            'program_studi' => underscore($jadwal->program_studi),
+                            'kelas' => nama_file_folder($krs->kelas),
+                            'mata_kuliah' => nama_file_folder($jadwal->mata_kuliah),
+                            'program_studi' => nama_file_folder($jadwal->program_studi),
                             'id_jadwal' => $jadwal->id,
                         ];
                         echo form_open_multipart('mahasiswa/upload_jawaban/' . $mode, 'name="UplJawab"', $hidden);

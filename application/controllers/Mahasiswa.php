@@ -55,6 +55,7 @@ class Mahasiswa extends MY_Controller
             'sisa_sesi' => $this->session->userdata('sesi_soal') ?: 0,
             'durasi_ujian' => $this->session->userdata('durasi_ujian') ?: 0,
             'jadwal' => $jadwal,
+            'krs' => $krs,
             'jawaban' => $jawaban,
             'page' => 'pages/mahasiswa/welcome',
         ];
@@ -70,7 +71,7 @@ class Mahasiswa extends MY_Controller
      * @param string $mode
      * @return void
      */
-    public function ikut_ujian(string $mode = 'reguler', int $id = null)
+    public function ikut_ujian(string $mode = 'reguler', int $id = null, int $krs = null)
     {
         // mode dan id harus diisi
         $avail_mode = ['reguler', 'nebeng'];
@@ -79,6 +80,7 @@ class Mahasiswa extends MY_Controller
         }
         // ambil jadwal
         $jadwal = $this->db->get_where('jadwal_ujian', ['id' => $id])->row();
+        $krs = $this->db->get_where('krs_mahasiswa', ['id' => $krs])->row();
         // batasi akses sesuai tanggal dan jam
         $izinkan = izinkan_ujian($jadwal);
         // alihkan jika false
@@ -121,6 +123,7 @@ class Mahasiswa extends MY_Controller
             'soal_utama' => $soal_utama,
             'soal' => $soal,
             'mode' => $mode,
+            'krs' => $krs,
             'sisa_sesi' => $this->session->userdata('sesi_soal'),
             'durasi_ujian' => $izinkan['durasi_ujian'],
             'jadwal' => $jadwal
@@ -283,7 +286,7 @@ class Mahasiswa extends MY_Controller
             'overwrite' => true,
             'file_ext_tolower' => true,
             'encrypt_name' => false,
-            'file_name' => $nim . '_' . underscore(str_replace(['.', '-'], '', strip_quotes(user()->nama_lengkap)))
+            'file_name' => $nim . '_' . nama_file_folder(strip_quotes(user()->nama_lengkap))
         ];
 
         $this->load->library('upload', $config);
@@ -386,11 +389,6 @@ class Mahasiswa extends MY_Controller
             set_alert('warning', 'Parameter data tidak cocok!', 'mahasiswa');
         }
         $this->db->update('riwayat_upload_jawaban', ['kunci_jawaban' => 1], ['id' => $id_riwayat_jawaban]);
-        // ambil kuisioner jika belum
-        /* $kuisi = $this->db->get_where('kuisioner', ['nim' => user()->nim])->row();
-        if (empty($kuisi)) {
-            set_alert('info', 'Jawaban berhasil dikunci dan kami mohon bantuan isi kuisioner ya. pliiisss.. 😊', 'mahasiswa/kuisioner');
-        } */
         $this->authit->logout('auth/mahasiswa');
     }
 }

@@ -81,7 +81,7 @@
                         </div>
                         <div class="small mt-1">
                             <span class="badge bg-success"></span>
-                            <span class="text-muted">kelas <?= user()->kelas; ?></span>
+                            <span class="text-muted">kelas <?= $krs->kelas; ?></span>
                         </div>
                     </div>
                     <div class="col-12">
@@ -113,9 +113,9 @@
                     // upload reguler
                     $hidden = [
                         'nim' => user()->nim,
-                        'kelas' => underscore(user()->kelas),
-                        'mata_kuliah' => underscore($jadwal->mata_kuliah),
-                        'program_studi' => underscore($jadwal->program_studi),
+                        'kelas' => nama_file_folder($krs->kelas),
+                        'mata_kuliah' => nama_file_folder($jadwal->mata_kuliah),
+                        'program_studi' => nama_file_folder($jadwal->program_studi),
                         'id_jadwal' => $jadwal->id,
                     ];
                     echo form_open_multipart('mahasiswa/upload_jawaban/' . $mode, 'name="UplJawab"', $hidden);
