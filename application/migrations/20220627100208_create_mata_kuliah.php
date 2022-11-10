@@ -41,6 +41,11 @@ class Migration_create_mata_kuliah extends CI_Migration
                 'constraint' => '100',
                 'null' => TRUE,
             ),
+            'file_zip' => array(
+                'type' => 'VARCHAR',
+                'constraint' => '200',
+                'null' => TRUE,
+            ),
         ));
 
         // Add Primary Key.
