@@ -54,11 +54,11 @@
                                 <td><?= $item->nama_dosen; ?></td>
                                 <td><?= $item->email_dosen; ?></td>
                                 <td>
-                                    <?php $valid = (!empty($item->file_jawaban) & is_file(realpath(WRITEPATH . $item->file_jawaban))); ?>
-                                    <?= ($valid) ? $item->file_jawaban : '⚠️'; ?>
+                                    <?php $valid = (!empty($item->file_zip) & is_file(realpath(WRITEPATH . $item->file_zip))); ?>
+                                    <?= ($valid) ? $item->file_zip : 'file kosong ⚠️'; ?>
                                 </td>
                                 <td>
-                                    <?php if (empty($item->file_jawaban)) : ?>
+                                    <?php if (empty($item->file_zip)) : ?>
                                         <a href="<?= site_url('kelola_jawaban/gen_jawaban/' . $item->id); ?>" class="btn btn-sm btn-primary">Gen File</a>
                                     <?php else : ?>
                                         <span class="text-success">

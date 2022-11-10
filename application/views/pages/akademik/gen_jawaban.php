@@ -9,7 +9,7 @@
                 <div class="d-flex">
                     <div class="p-2 flex-fill">Jadwal</div>
                     <div class="p-2 flex-fill text-muted">
-                        <pre><code><?= !(empty($jadwal)) ? json_encode($jadwal) : json_encode([]); ?></code></pre>
+                        <pre><code class="language-json" data-lang="json"><?= !(empty($jadwal)) ? json_encode($jadwal, JSON_PRETTY_PRINT) : json_encode([]); ?></code></pre>
                     </div>
                 </div>
             </li>
@@ -21,14 +21,20 @@
             </li>
             <li>
                 <div class="d-flex">
+                    <div class="p-2 flex-fill">Program Studi</div>
+                    <div class="p-2 flex-fill text-muted"><?= $matkul->program_studi; ?></div>
+                </div>
+            </li>
+            <li>
+                <div class="d-flex">
                     <div class="p-2 flex-fill">Mata Kuliah</div>
                     <div class="p-2 flex-fill text-muted"><?= $matkul->mata_kuliah; ?></div>
                 </div>
             </li>
             <li>
                 <div class="d-flex">
-                    <div class="p-2 flex-fill">Program Studi</div>
-                    <div class="p-2 flex-fill text-muted"><?= $matkul->program_studi; ?></div>
+                    <div class="p-2 flex-fill">Kelas</div>
+                    <div class="p-2 flex-fill text-muted"><?= $matkul->kelas; ?></div>
                 </div>
             </li>
             <li>
@@ -50,7 +56,7 @@
             <li>
                 <div class="d-flex">
                     <div class="p-2 flex-fill">Jawaban</div>
-                    <div class="p-2 flex-fill text-success"><?= !empty($jawaban) ? count($jawaban) : 0; ?></div>
+                    <div class="p-2 flex-fill text-dark fs-1 text-left"><?= !empty($jawaban) ? count($jawaban) : 0; ?></div>
                 </div>
             </li>
         </ul>

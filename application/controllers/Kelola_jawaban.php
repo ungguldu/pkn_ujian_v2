@@ -18,8 +18,8 @@ class Kelola_jawaban extends MY_Controller
         if ($this->db->count_all_results('apps_setting') < 6) {
             set_alert('warning', 'Lengkapi setting aplikasi dulu ya min... 😒', 'welcome');
         }
-        // load config
-        $this->load->config('apps_ujian');
+        // load helper
+        $this->load->helper('ujian_helper');
     }
 
     public function index()
@@ -30,7 +30,7 @@ class Kelola_jawaban extends MY_Controller
         $this->load->view('template_apps', $data ?? null, false);
     }
 
-    public function setting_email(string $mode = null)
+    /* public function setting_email(string $mode = null)
     {
         if (!empty($mode) and $mode !== 'update') {
             set_alert('warning', 'Parameter setting email tidak valid!', 'kelola_jawaban/setting_email');
@@ -64,7 +64,7 @@ class Kelola_jawaban extends MY_Controller
             ];
             $this->load->view('template_apps', $data ?? null, false);
         }
-    }
+    } */
 
     public function kirim_jawaban(string $var = null)
     {
@@ -339,54 +339,78 @@ class Kelola_jawaban extends MY_Controller
     {
         $redirect_to = $this->input->get('ref', true);
 
-        if (empty($id)) {
-            set_alert('warning', 'ID data kosong. Data tidak ditemukan!', $this->agent->referrer());
-        }
         $matkul = $this->db->get_where('mata_kuliah', ['id' => $id])->row();
-        if (empty($matkul)) {
-            set_alert('warning', 'Data mata kuliah tidak ditemukan!', $this->agent->referrer());
-        }
+        if (empty($id) or empty($matkul)) {
+            set_alert('warning', 'ID data kosong. Data tidak ditemukan!', $this->agent->referrer());
+        }       
+        // kriteria jawaban
         $where_jawaban = [
-            'mata_kuliah' => underscore(str_replace(['/', '(', ')', '.'], '', $matkul->mata_kuliah)),
-            'program_studi' => underscore(str_replace('/', '_', $matkul->program_studi)),
-            'kelas' => underscore($matkul->kelas),
+            'mata_kuliah' => nama_file_folder($matkul->mata_kuliah),
+            'program_studi' => nama_file_folder($matkul->program_studi),
+            'kelas' => nama_file_folder($matkul->kelas),
+            'kunci_jawaban' => 1
         ];
         // ambil jawaban
         $jawaban = $this->db->get_where('riwayat_upload_jawaban', $where_jawaban)->result();
+        $jawaban_extract = json_decode(json_encode($jawaban), true);
+        
         if (empty($jawaban)) {
             set_alert('warning', 'Data jawaban kosong. Ujian belum berlangsung atau file belum disinkronisasi.', $this->agent->referrer());
         }
-        // ambil soal
-        $where_jadwal = [
-            'mata_kuliah' => str_replace(['/', '(', ')', '.'], '', $matkul->mata_kuliah),
-            'program_studi' => $matkul->program_studi,
-        ];
-        $jadwal = $this->db->get_where('jadwal_ujian', $where_jadwal)->row();
+        // ambil jadwal dari record jawaban yang dimiliki oleh mata kuliah diatas
+        function _group_by($array, $key) {
+            $array = (array) $array;
+            $arr_key = array_keys($array[0]);
+            $ret_key = array_values(array_diff($arr_key, [$key]));
+
+            foreach ($array as $val) {
+                $return[$val[$key]][] = $val[$ret_key[0]];
+            }
+            return $return;
+        }
+
+        $group_id_jadwal = _group_by($jawaban_extract, 'id_jadwal');
+        // ambil key group
+        $id_jadwal = array_keys($group_id_jadwal);
+        
+        if(empty($id_jadwal) or count($id_jadwal) > 1) {
+            set_alert('warning', 'Min data jawaban ada yang Aneh!! 😢. Ada dua ID jadwal pada mata pelajaran ini. Cek manual ya. Zip jawaban dibatalkan!', $this->agent->referrer());
+        }
+        // ambil jadwal
+        $id_jadwal_ok = $id_jadwal[0];
+        $jadwal = $this->db->get_where('jadwal_ujian', ['id' => $id_jadwal_ok])->row();
+
         if (empty($jadwal)) {
             set_alert('warning', 'Data jadwal tidak valid. Cocokkan kembali data ujian data mata pelajaran.', $this->agent->referrer());
         }
+        // ambil soal
         $soal = $this->db->get_where('soal_ujian', ['id_jadwal' => $jadwal->id])->row();
 
         // ambil BA
         $where = [
-            'mata_kuliah' => str_replace(['/', '(', ')', '.'], '', $matkul->mata_kuliah),
-            'program_studi' => str_replace(['/', '(', ')', '.'], '', $matkul->program_studi),
+            'mata_kuliah' => $matkul->mata_kuliah,
+            'program_studi' => $matkul->program_studi,
             'kelas' => $matkul->kelas,
+            'id_jadwal' => $id_jadwal_ok,
         ];
         $ba = $this->db->get_where('riwayat_ba_pengawas', $where)->row();
-
+        
         // zipkan
         if ($exe !== false) {
             $this->load->helper('string');
             $sesi = $jadwal->sesi;
-            $folder = underscore(str_replace(['/', '(', ')', '.'], '', $jadwal->mata_kuliah));
+            $kelas = nama_file_folder($matkul->kelas);
+            $prodi = nama_file_folder($jadwal->program_studi);
+            $folder = nama_file_folder($jadwal->mata_kuliah);
+            // base folder zip
+            $base_dir_zip = $this->config->item('dir_zip');
+            $base_dir = $base_dir_zip . $sesi . DIRECTORY_SEPARATOR. $prodi. DIRECTORY_SEPARATOR;
 
-            $base_dir = WRITEPATH . 'zip_to_dosen' . DIRECTORY_SEPARATOR . $sesi . DIRECTORY_SEPARATOR;
             if (!is_dir(realpath($base_dir))) {
                 mkdir($base_dir, 0775, true);
             }
 
-            $nama_zip = $base_dir . random_string('alnum', 16) . '.zip';
+            $nama_zip = $base_dir . $kelas.'_'.$folder.'.zip';
             $zip_mode = (is_file($nama_zip) and file_exists($nama_zip)) ? ZipArchive::OVERWRITE : ZipArchive::CREATE;
 
             // buat zip dan download
@@ -420,7 +444,7 @@ class Kelola_jawaban extends MY_Controller
                 // Add files to the zip file
                 $zip->close();
                 // update ke path mata kuliah
-                $upd = ['file_jawaban' => str_replace(WRITEPATH, '', $nama_zip)];
+                $upd = ['file_zip' => str_replace(WRITEPATH, '', $nama_zip)];
                 $this->db->update('mata_kuliah', $upd, ['id' => $id]);
                 // kasih notif
                 set_alert('success', 'File zip berhasil digenerate dengan nama file: <strong>' . str_replace(WRITEPATH, '', $nama_zip) . '</strong>.', $redirect_to ?? 'kelola_jawaban/file_jawaban');
