@@ -35,7 +35,7 @@
                     <thead>
                         <tr>
                             <th class="w-1">Pilih</th>
-                            <th class="w-1">No.</th>
+                            <th class="w-1">ID</th>
                             <th>Program Studi</th>
                             <th>Mata Kuliah</th>
                             <th>Semester</th>
@@ -60,7 +60,7 @@
                                         <span class="text-success"><i class="icon ti ti-checkbox"></i></span>
                                     <?php endif; ?>
                                 </td>
-                                <td><span class="text-muted"><?= ++$start; ?></span></td>
+                                <td><span class="text-muted"><?= $jd->id; ?></span></td>
                                 <td><?= $jd->program_studi; ?></td>
                                 <td><?= $jd->mata_kuliah; ?></td>
                                 <td><?= $jd->semester; ?></td>
