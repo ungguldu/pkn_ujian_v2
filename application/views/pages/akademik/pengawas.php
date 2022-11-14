@@ -116,7 +116,7 @@
                                 <h4 class="alert-title">Panduan</h4>
                                 <div class="text-muted">Gunakan file template berikut ini untuk menghindari kesalahan format data. Download <a href="<?= site_url('welcome/download?file=00000000000_template_pengawas.xlsx'); ?>" class="btn-link">disini</a>.</div>
                             </div>
-                            <?= form_open_multipart('akademik/upload/pengawas', 'name="Upl_pengawas"'); ?>
+                            <?= form_open_multipart('akademik/upload/pengawas', 'name="Upl_pengawas"', ['kategori_data' => 'pengawas']); ?>
                             <div class="mb-3">
                                 <div class="form-label">Upload Data</div>
                                 <input type="file" class="form-control" name="upload_pengawas" accept="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet">
