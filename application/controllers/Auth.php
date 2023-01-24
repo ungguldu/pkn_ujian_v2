@@ -127,7 +127,7 @@ class Auth extends CI_Controller
             }
             // cek jadwal
             $jadwal = $this->db->get_where('jadwal_ujian', ['id' => $user->id_jadwal])->row();
-            $akses = izinkan_ujian($jadwal, -15); // reques mas fahrizal
+            $akses = izinkan_ujian($jadwal, -30); // reques mas fahrizal
 
             // batasi login
             if ($akses['izinkan'] == false) {
