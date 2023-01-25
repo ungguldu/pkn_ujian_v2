@@ -296,10 +296,10 @@ class Akademik extends MY_Controller
         $mulai = $start + 1;
         foreach ($mydata as $i => $dt) {
             $th = array_keys($dt);
-            unset($dt['id']);
+            //unset($dt['id']);
             $datas[$i] = array_merge(['no' => $mulai++], $dt);
         };
-        unset($th[0]);
+        //unset($th[0]);
         array_unshift($th, 'no');
         array_unshift($datas, $th);
 
