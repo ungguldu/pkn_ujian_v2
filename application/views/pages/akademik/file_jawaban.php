@@ -56,7 +56,7 @@
                                 <td>
                                     <?php $valid = (!empty($item->file_zip) & is_file(realpath(WRITEPATH . $item->file_zip))); ?>
                                     <?= ($valid) ? '<span class="badge bg-green" data-bs-trigger="hover" data-bs-toggle="popover" title="File Jawaban dalam ZIP" data-bs-content="'.$item->file_zip.'">
-                                            <i class="ti ti-zip"></i> file ok 
+                                            <i class="ti ti-file-zip"></i> file ok 
                                         </span>' : 'file kosong ⚠️'; ?>
                                 </td>
                                 <td>
