@@ -90,7 +90,7 @@
 <script>
     document.addEventListener("DOMContentLoaded", function() {
 
-        var sesi = <?= json_encode($group_sesi, JSON_PRETTY_PRINT); ?>;
+        var sesi = <?= json_encode($group_sesi); ?>;
 
         document.getElementById('sel_tanggal').addEventListener('change', function() {
             var val = this.value;
@@ -98,7 +98,6 @@
             var el_sesi = document.getElementById('sel_sesi');
             var sesi_selected = '<?= $selected_sesi; ?>';
             el_sesi.innerHTML = '';
-            console.log(val, opt_sesi);
 
             if (val === 'all') {
                 el_sesi.innerHTML = '<option value="all">Pilih sesi </option>';
