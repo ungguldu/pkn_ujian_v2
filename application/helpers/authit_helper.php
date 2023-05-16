@@ -92,8 +92,9 @@ function show_alert($dismiss = true)
 function paginasi(int $total_rows = 0, int $start = 0, int $per_page = 0, string $pagination_links = '')
 {
     $start_str = ($total_rows == 0) ? 0 : 1;
+    $text = ($total_rows < $per_page) ? 'Menampilkan <b>'.$start_str.'</b> data' : 'Menampilkan <b>'.$start_str. '</b> sampai ' . $start + $per_page . ' dari <b>' . $total_rows . '</b> data';
     $str = '<div class="mt-3 d-flex align-items-center">';
-    $str .= '<p class="m-0 text-muted">Menampilkan <span>' . $start_str . '</span> sampai <span>' . $start + $per_page . '</span> dari <span>' . $total_rows . '</span> data</p>';
+    $str .= '<p class="m-0 text-muted">'.$text.'</p>';
     $str .= $pagination_links;
     $str .= '</div>';
 
