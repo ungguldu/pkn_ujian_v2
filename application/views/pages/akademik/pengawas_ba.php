@@ -46,6 +46,9 @@
                         <th>Program Studi</th>
                         <th>Kelas</th>
                         <th>Mata Kuliah</th>
+                        <th>Total Peserta</th>
+                        <th>Hadir</th>
+                        <th>Tidak Hadir</th>
                         <th>BA Pengawas</th>
                     </tr>
                 </thead>
@@ -59,8 +62,17 @@
                                 <td><?= $b->program_studi; ?></td>
                                 <td><?= $b->kelas; ?></td>
                                 <td><?= $b->mata_kuliah; ?></td>
+                                <td><b><?= $b->peserta_total; ?></b></td>
+                                <td><?= $b->peserta_hadir; ?></td>
+                                <td><b class="text-warning"><?= $b->peserta_absen; ?></b></td>
                                 <td>
-                                    <?= $b->file_path; ?>
+                                    <?php if (!empty($b->file_path)) : ?>
+                                        <span class="badge bg-green" data-bs-trigger="hover" data-bs-toggle="popover" title="File BA" data-bs-content="<?= $b->file_path; ?>">
+                                            <i class="ti ti-file"></i>&nbsp;BA tercetak
+                                        </span>
+                                    <?php else : ?>
+                                        <span class="badge bg-red">Ba kosong!</span>
+                                    <?php endif; ?>
                                 </td>
                             </tr>
                         <?php endforeach;
@@ -102,7 +114,7 @@
             }
         });
         var downBA = document.getElementById('donloadBA');
-        if(downBA !== null) {
+        if (downBA !== null) {
             downBA.addEventListener('click', function() {
                 var sesi = document.getElementById('sel_sesi').value;
                 var conf = confirm('Apakah Anda yakin Berita Acara sesi: ' + sesi + ' sudah lengkap?');
