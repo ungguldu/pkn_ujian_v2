@@ -4,7 +4,7 @@ defined('BASEPATH') or exit('No direct script access allowed');
 
 <div class="empty">
     <div class="empty-img">
-        <img src="<?= base_url('assets/img/empty.svg'); ?>" height="254" alt="Not Found">
+        <img src="<?= base_url('assets/img/empty.png'); ?>" height="254" alt="Not Found">
     </div>
     <p class="empty-title">Halaman Tidak Ditemukan</p>
     <p class="empty-subtitle text-muted">
