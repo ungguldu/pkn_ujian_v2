@@ -57,7 +57,6 @@
             </a>
         </div>
     </li>
-
     <li class="nav-item">
         <a class="nav-link" href="<?= site_url('kelola_jawaban/file_jawaban'); ?>">
             <span class="nav-link-icon d-md-none d-lg-inline-block">
@@ -65,6 +64,16 @@
             </span>
             <span class="nav-link-title">
                 Kelola Jawaban
+            </span>
+        </a>
+    </li>
+    <li class="nav-item">
+        <a class="nav-link" href="<?= site_url('kelola_presensi'); ?>">
+            <span class="nav-link-icon d-md-none d-lg-inline-block">
+                <i class="icon ti ti-calendar-time text-success"></i>
+            </span>
+            <span class="nav-link-title">
+                Kelola Presensi
             </span>
         </a>
     </li>
