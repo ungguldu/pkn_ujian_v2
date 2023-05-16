@@ -55,15 +55,15 @@
                                 <td><?= $item->email_dosen; ?></td>
                                 <td>
                                     <?php $valid = (!empty($item->file_zip) & is_file(realpath(WRITEPATH . $item->file_zip))); ?>
-                                    <?= ($valid) ? $item->file_zip : 'file kosong ⚠️'; ?>
+                                    <?= ($valid) ? '<span class="badge bg-green" data-bs-trigger="hover" data-bs-toggle="popover" title="File Jawaban dalam ZIP" data-bs-content="'.$item->file_zip.'">
+                                            <i class="ti ti-zip"></i> file ok 
+                                        </span>' : 'file kosong ⚠️'; ?>
                                 </td>
                                 <td>
                                     <?php if (empty($item->file_zip)) : ?>
                                         <a href="<?= site_url('kelola_jawaban/gen_jawaban/' . $item->id); ?>" class="btn btn-sm btn-primary">Gen File</a>
                                     <?php else : ?>
-                                        <span class="text-success">
-                                            <i class="icon icon-filled ti ti-star"></i>
-                                        </span>
+                                        -
                                     <?php endif; ?>
                                 </td>
                             </tr>
