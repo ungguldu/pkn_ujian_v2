@@ -305,7 +305,7 @@ class Mahasiswa extends MY_Controller
             'overwrite' => true,
             'file_ext_tolower' => true,
             'encrypt_name' => false,
-            'file_name' => $nim . '_' . nama_file_folder(strip_quotes(user()->nama_lengkap))
+            'file_name' => nama_file_folder(strip_quotes(user()->nama_lengkap)).'_'.$nim
         ];
 
         $this->load->library('upload', $config);
