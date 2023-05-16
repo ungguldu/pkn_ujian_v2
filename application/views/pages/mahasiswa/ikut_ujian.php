@@ -37,7 +37,7 @@
                     </div>
                     <div class="col-12">
                         <a href="<?= $soal_utama; ?>" class="btn btn-primary w-100" target="_blank">
-                            Buka Lembar Soal
+                            Buka Lembar Soal <?= (empty($has_presensi)) ? 'dan Presensi Kehadiran' : ''; ?>
                         </a>
                     </div>
                 </div>

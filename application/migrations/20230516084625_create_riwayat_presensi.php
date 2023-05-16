@@ -34,7 +34,7 @@ class Migration_create_riwayat_presensi extends CI_Migration
                 'constraint' => '20',
                 'null' => TRUE,
             ),
-            'id_ujian' => array(
+            'id_jadwal' => array(
                 'type' => 'INT',
                 'constraint' => '11',
                 'null' => TRUE,

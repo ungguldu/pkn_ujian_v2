@@ -117,6 +117,8 @@ class Mahasiswa extends MY_Controller
         } else {
             set_alert('warning', 'Soal ujian belum diupload. Hubungi petugas!', 'mahasiswa');
         }
+        // penanda presensi
+        $has_presensi = $this->db->get_where('riwayat_presensi', ['nim' => user()->nim, 'id_jadwal' => $id])->row();
 
         $data = [
             'page' => 'pages/mahasiswa/ikut_ujian',
@@ -126,7 +128,8 @@ class Mahasiswa extends MY_Controller
             'krs' => $krs,
             'sisa_sesi' => $this->session->userdata('sesi_soal'),
             'durasi_ujian' => $izinkan['durasi_ujian'],
-            'jadwal' => $jadwal
+            'jadwal' => $jadwal,
+            'has_presensi' => $has_presensi
         ];
 
         $this->load->view('template_apps', $data ?? null, false);
@@ -183,6 +186,22 @@ class Mahasiswa extends MY_Controller
             $filename = $this->security->sanitize_filename($filename);
             $type_file = get_mime_by_extension($filename);
         }
+
+        // Presensi Ujian
+        // cek sudah presensi atau belum
+        $has_presensi = $this->db->get_where('riwayat_presensi', ['nim' => user()->nim, 'id_jadwal' => $id_jadwal])->row();
+        if(empty($has_presensi)) {
+            $ins_presesnsi = [
+                'nim' => user()->nim,
+                'program_studi' => user()->program_studi,
+                'kelas' => user()->kelas,
+                'id_jadwal' => $id_jadwal,
+                'mata_kuliah' => $jadwal->mata_kuliah,
+                'presensi_pada' => date('Y-m-d H:i:s'),
+                'ip_address' => $this->input->ip_address()                
+            ];
+            $this->db->insert('riwayat_presensi', $ins_presesnsi);          
+        }       
 
         $this->load->helper('download');
 
