@@ -142,7 +142,7 @@
                         </div>
                         <div class="mb-2">
                             <i class="icon ti ti-book text-teal me-2 text-muted"></i>
-                            Kelas KRS: <strong><?= $krs->kelas; ?></strong>
+                            Kelas KRS: <strong><?= (!empty($krs)) ? $krs->kelas : 'Data KRS tidak ditemukan!'; ?></strong>
                         </div>
                     </div>
                 </div>
