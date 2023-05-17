@@ -193,13 +193,16 @@ class Mahasiswa extends MY_Controller
         if(empty($has_presensi)) {
             $ins_presesnsi = [
                 'nim' => user()->nim,
+                'nama_lengkap' => user()->nama_lengkap,
                 'program_studi' => user()->program_studi,
                 'kelas' => user()->kelas,
                 'id_jadwal' => $id_jadwal,
+                'sesi' => $jadwal->sesi,
                 'mata_kuliah' => $jadwal->mata_kuliah,
                 'presensi_pada' => date('Y-m-d H:i:s'),
                 'ip_address' => $this->input->ip_address()                
             ];
+            // insert to db
             $this->db->insert('riwayat_presensi', $ins_presesnsi);          
         }       
 

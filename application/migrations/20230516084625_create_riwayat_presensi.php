@@ -24,6 +24,11 @@ class Migration_create_riwayat_presensi extends CI_Migration
                 'constraint' => '12',
                 'null' => TRUE,
             ),
+            'nama_lengkap' => array(
+                'type' => 'VARCHAR',
+                'constraint' => '200',
+                'null' => TRUE,
+            ),
             'program_studi' => array(
                 'type' => 'VARCHAR',
                 'constraint' => '200',
@@ -37,6 +42,11 @@ class Migration_create_riwayat_presensi extends CI_Migration
             'id_jadwal' => array(
                 'type' => 'INT',
                 'constraint' => '11',
+                'null' => TRUE,
+            ),
+            'sesi' => array(
+                'type' => 'INT',
+                'constraint' => '3',
                 'null' => TRUE,
             ),
             'mata_kuliah' => array(
