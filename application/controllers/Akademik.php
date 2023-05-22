@@ -413,7 +413,7 @@ class Akademik extends MY_Controller
             $config = [
                 'upload_path' => WRITEPATH . 'masalah' . DIRECTORY_SEPARATOR,
                 'allowed_types' => 'pdf',
-                'max_size' => 8192,
+                'max_size' => 10240,
                 'overwrite' => true,
                 'file_ext_tolower' => true,
                 'encrypt_name' => true
