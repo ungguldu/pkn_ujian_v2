@@ -33,10 +33,8 @@ class Kelola_presensi extends MY_Controller {
         // load
         $this->load->library('pagination');
         $this->pagination->initialize($config);
-
-        $select = 'a.*, b.nama_lengkap, c.sesi, c.waktu_mulai';
-        $this->db->select($select)->join('mahasiswa b', 'b.nim = a.nim', 'left')->join('jadwal_ujian c', 'c.id = a.id_jadwal', 'left');
-        $presensi = $this->db->get('riwayat_presensi a')->result();
+        
+        $presensi = $this->db->limit($per_page, $start)->get('riwayat_presensi a')->result();
 
         $data = [
             'start' => $start,
