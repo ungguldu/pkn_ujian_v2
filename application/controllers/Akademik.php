@@ -348,8 +348,8 @@ class Akademik extends MY_Controller
         $this->load->library('pagination');
         $this->pagination->initialize($config);
         // untuk attachment
-        $file_type = ['video', 'zip', 'excel', 'powerpoint'];
-        $mimes = ['video/mp4', 'video/mpeg', 'application/vnd.ms-powerpoint', 'application/vnd.openxmlformats-officedocument.presentationml.presentation', 'application/vnd.ms-excel', 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet', 'application/zip'];
+        $file_type = ['video', 'zip', 'excel', 'powerpoint', 'pdf'];
+        $mimes = ['video/mp4', 'video/mpeg', 'application/vnd.ms-powerpoint', 'application/vnd.openxmlformats-officedocument.presentationml.presentation', 'application/vnd.ms-excel', 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet', 'application/zip', 'application/pdf'];
         // data to view
         $data = array(
             'file_type' => $file_type, // untuk upload attachment
@@ -379,7 +379,7 @@ class Akademik extends MY_Controller
             set_alert('warning', 'Method tidak ditemukan! Gunakan tautan tersedia.', $redirect);
         }
         // saring mimes
-        $file_type = ['video', 'zip', 'excel', 'powerpoint'];
+        $file_type = ['video', 'zip', 'excel', 'powerpoint', 'pdf'];
         $mimes = ['video/mp4', 'video/mpeg', 'application/vnd.ms-powerpoint', 'application/vnd.openxmlformats-officedocument.presentationml.presentation', 'application/vnd.ms-excel', 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet', 'application/zip'];
 
         // ambil data file_type
@@ -389,6 +389,9 @@ class Akademik extends MY_Controller
             switch ($input_file_type) {
                 case 'video':
                     $config1['allowed_types'] = 'mp4|mpeg';
+                    break;
+                case 'pdf':
+                    $config1['allowed_types'] = 'pdf';
                     break;
                 case 'excel':
                     $config1['allowed_types'] = 'xlsx|xls';
@@ -403,7 +406,7 @@ class Akademik extends MY_Controller
 
             $config2 = [
                 'upload_path' => WRITEPATH . 'masalah' . DIRECTORY_SEPARATOR,
-                'max_size' => 10240,
+                'max_size' => 12288,
                 'overwrite' => true,
                 'file_ext_tolower' => true,
                 'encrypt_name' => true
