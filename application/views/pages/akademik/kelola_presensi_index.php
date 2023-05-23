@@ -4,34 +4,41 @@
     <div class="card-body">
         <h3 class="card-title">Kelola Presensi</h3>
         <div class="row my-3">
-            <div class="col-12 col-md-6"></div>
-            <div class="col-12 col-md-6">
-                <?= form_open('kelola_presensi', ['method' => 'GET', 'name' => 'cariData']); ?>
-                <div class="row">
-                    <div class="col">
-                        <select class="form-select">
-                            <option value="STATUS_CODE" selected="">Status code</option>
-                            <option value="JSON_BODY">JSON body</option>
-                            <option value="HEADERS">Headers</option>
-                            <option value="TEXT_BODY">Text body</option>
-                            <option value="RESPONSE_TIME">Response time</option>
-                        </select>
-                    </div>
-                    <div class="col">
-                        <select class="form-select">
-                            <option value="STATUS_CODE" selected="">Status code</option>
-                            <option value="JSON_BODY">JSON body</option>
-                            <option value="HEADERS">Headers</option>
-                            <option value="TEXT_BODY">Text body</option>
-                            <option value="RESPONSE_TIME">Response time</option>
-                        </select>
-                    </div>
-                    <div class="col">
-                        <button type="submit" class="btn btn-primary">Tampilkan</button>
-                        <a href="<?= site_url('kelola_presensi'); ?>" class="btn btn-icon btn-default"><i class="icon ti ti-refresh"></i></a>
-                    </div>
+            <div class="col-12 col-md-4 order-1">
+                <?= form_open('', 'name="cari_data" method="get"'); ?>
+                <div class="input-group">
+                    <input type="text" name="cari" value="<?= $q; ?>" class="form-control">
+                    <button type="submit" class="btn btn-primary">Cari</button>
+                    <?php if (!empty($q)) : ?><a href="<?= site_url('kelola_presensi'); ?>" class="btn">Reset</a><?php endif; ?>
                 </div>
                 <?= form_close(); ?>
+            </div>
+            <div class="col-12 col-md-8">
+                <div class="row g-1">
+                    <div class="col">
+                        <?php
+                        $opt_sesi_new = ['' => 'Pilih sesi'] + array_combine($opt_sesi, $opt_sesi);
+                        echo form_dropdown('sesi', $opt_sesi_new,  set_value('sesi'), 'class="form-select" id="sel_sesi"') . PHP_EOL;
+                        ?>
+                    </div>
+                    <div class="col">
+                        <select name="user[day]" class="form-select">
+                            <option value="">Day</option>
+                            <option value="1">1</option>
+                            <option value="2">2</option>
+                        </select>
+                    </div>
+                    <div class="col">
+                        <select name="user[year]" class="form-select">
+                            <option value="">Year</option>
+                            <option value="2014">2014</option>
+                            <option value="2013">2013</option>
+                        </select>
+                    </div>
+                    <div class="col-auto">
+                        <button class="btn btn-info">tampilkan</button>
+                    </div>
+                </div>
             </div>
         </div>
         <div class="table-responsive">

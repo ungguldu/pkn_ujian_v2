@@ -33,14 +33,37 @@ class Kelola_presensi extends MY_Controller {
         // load
         $this->load->library('pagination');
         $this->pagination->initialize($config);
-        
-        $presensi = $this->db->limit($per_page, $start)->get('riwayat_presensi a')->result();
+        // cari
+        $like = ['nim' => $q, 'nama_lengkap' => $q, 'program_studi' => $q, 'kelas' => $q, 'sesi' => $q, 'mata_kuliah' => $q];
+        !empty($q) ? $this->db->or_like($like) : false;
+        $presensi = $this->db->limit($per_page, $start)->order_by('sesi, program_studi, kelas ASC')->get('riwayat_presensi')->result();
+
+        // helper group opt
+        function _group_by($array, $key)
+        {
+            $arr_key = array_keys($array[0]);
+            $ret_key = array_values(array_diff($arr_key, [$key]));
+
+            foreach ($array as $val) {
+                $return[$val[$key]][] = $val[$ret_key[0]];
+            }
+            return $return;
+        }
+
+        $row_filter_sesi_prodi = $this->db->select('distinct program_studi, sesi', false)->order_by('sesi, program_studi ASC')->get('riwayat_presensi')->result_array();
+        $row_filter_prodi_kelas = $this->db->select('distinct program_studi, kelas, sesi', false)->order_by('sesi, program_studi ASC')->get('riwayat_presensi')->result_array();
+        $opt_sesi_prodi = _group_by($row_filter_sesi_prodi, 'sesi');
+        $opt_prodi_kelas = _group_by($row_filter_prodi_kelas, 'program_studi');
 
         $data = [
+            'q' => $q,
             'start' => $start,
             'total' => $config['total_rows'],
             'halaman' => paginasi($config['total_rows'], $start, $per_page, $this->pagination->create_links()),
             'presensi' => $presensi,
+            'opt_sesi' => array_keys($opt_sesi_prodi),
+            'opt_sesi_prodi' => json_encode($opt_sesi_prodi ?? [], JSON_PRETTY_PRINT|JSON_UNESCAPED_SLASHES),
+            'opt_prodi_kelas' => json_encode($opt_prodi_kelas ?? [], JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES),
             'page' => 'pages/akademik/kelola_presensi_index',
         ];
 
