@@ -14,6 +14,7 @@
                 <?= form_close(); ?>
             </div>
             <div class="col-12 col-md-8">
+                <?= form_open('', 'name="filterData" method="get"'); ?>
                 <div class="row g-1">
                     <div class="col">
                         <?php
@@ -22,23 +23,23 @@
                         ?>
                     </div>
                     <div class="col">
-                        <select name="user[day]" class="form-select">
-                            <option value="">Day</option>
-                            <option value="1">1</option>
-                            <option value="2">2</option>
-                        </select>
+                        <?php
+                        $opt_prodi_new = ['' => 'Pilih Prodi'];
+                        echo form_dropdown('prodi', $opt_prodi_new,  set_value('prodi'), 'class="form-select" id="sel_prodi"') . PHP_EOL;
+                        ?>
                     </div>
                     <div class="col">
-                        <select name="user[year]" class="form-select">
-                            <option value="">Year</option>
-                            <option value="2014">2014</option>
-                            <option value="2013">2013</option>
-                        </select>
+                        <?php
+                        $opt_prodi_new = ['' => 'Pilih Kelas'];
+                        echo form_dropdown('kelas', $opt_prodi_new,  set_value('kelas'), 'class="form-select" id="sel_kelas"') . PHP_EOL;
+                        ?>
                     </div>
                     <div class="col-auto">
-                        <button class="btn btn-info">tampilkan</button>
+                        <button type="submit" class="btn btn-info">Tampilkan</button>
+                        <?php if($filter): ?><a href="<?= site_url('kelola_presensi'); ?>" class="btn">Reset</a><?php endif; ?>
                     </div>
                 </div>
+                <?= form_close(); ?>
             </div>
         </div>
         <div class="table-responsive">
@@ -81,3 +82,48 @@
         <?= $halaman; ?>
     </div>
 </div>
+
+<script>
+    const sel_sesi = document.getElementById('sel_sesi');
+    const sel_prodi = document.getElementById('sel_prodi');
+    const sel_kelas = document.getElementById('sel_kelas');
+
+    let ses_prodi = <?= $opt_sesi_prodi; ?>;
+    let prodi_kelas = <?= $opt_prodi_kelas; ?>;
+
+    sel_sesi.addEventListener('change', function(e) {
+        let sesi = e.target.value;
+        let prodi = ses_prodi[sesi];
+
+        if (sesi !== '') {
+            sel_prodi.innerHTML = '<option value="">Pilih Prodi</option>';
+            for (var i = 0; i < prodi.length; i++) {
+                var opt_prodi = document.createElement("option");
+                opt_prodi.textContent = prodi[i];
+                opt_prodi.value = prodi[i];
+
+                sel_prodi.appendChild(opt_prodi);
+            }
+        } else {
+            sel_prodi.innerHTML = '<option value="">Pilih Prodi</option>';
+        }
+    });
+
+    sel_prodi.addEventListener('change', function(e) {
+        let prodi = e.target.value;
+        let kelas = prodi_kelas[prodi];
+
+        if (prodi !== '') {
+            sel_kelas.innerHTML = '<option value="">Pilih Kelas</option>';
+            for (var i = 0; i < kelas.length; i++) {
+                var opt_kelas = document.createElement("option");
+                opt_kelas.textContent = kelas[i];
+                opt_kelas.value = kelas[i];
+
+                sel_kelas.appendChild(opt_kelas);
+            }
+        } else {
+            sel_kelas.innerHTML = '<option value="">Pilih Kelas</option>';
+        }
+    });
+</script>
