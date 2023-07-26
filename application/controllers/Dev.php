@@ -147,11 +147,21 @@ class Dev extends CI_Controller
 
     public function move_hasil(): bool
     {
+        $write    = realpath(APPPATH);
+        $root_dir = dirname($write, 1) . DIRECTORY_SEPARATOR;
+
+        $db_ori = $root_dir.'database.php.ori';
+        $db_ori_to = APPPATH.'config'.DIRECTORY_SEPARATOR.'database.php';
+
         $a = readline('Confirm move hasil ujian? [0, 1]: ');
         if (intval($a) == 1) {
             $write     = realpath(WRITEPATH);
             if (is_dir($write)) {
+                // rename folder writeable
                 rename($write, $write . '_old_' . date('Ymdhis'));
+                // copy config database ori
+                copy($db_ori, $root_dir.'database.php');
+                rename($root_dir.'database.php', $db_ori_to);
                 return $this->unzip_write();
             }
             return $this->unzip_write();
