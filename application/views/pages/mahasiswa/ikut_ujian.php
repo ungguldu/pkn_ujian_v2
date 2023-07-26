@@ -128,7 +128,7 @@
                     </div>
                     <small class="form-hint mb-3">
                         ekstensi file yang diizinkan adalah <span class="text-warning">.zip</span> atau <span class="text-warning">.pdf</span>
-                        <br />dan besar file yang dapat di upload maksimal <span class="text-danger">8 Mb</span>.
+                        <br />dan besar file yang dapat di upload maksimal <span class="text-danger">30 Mb</span>.
                     </small>
                     <?= form_close(); ?>
                 </div>
