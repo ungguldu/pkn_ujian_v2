@@ -68,7 +68,7 @@ class Dev extends CI_Controller
             show_error($this->migration->error_string());
             return false;
         } else {
-            $this->cli->log('The migration has concluded successfully.', 'light_green');
+            $this->cli->log('✅ The migration has concluded successfully.', 'light_green');
             return true;
         }
     }
@@ -134,6 +134,8 @@ class Dev extends CI_Controller
                 $this->cli->log('Folder hasil ujian sebelumnya gagal pindahkan!', 'light_red');
                 exit;
             }
+            // reconnect DB
+            $this->db->reconnect();
             // migrasikan DB
             if($this->reset_migration()) { 
                 $this->do_migration();
@@ -178,6 +180,7 @@ class Dev extends CI_Controller
             if (is_dir($write)) {
                 // rename folder writeable
                 rename($write, $write . '_old_' . date('Ymdhis'));
+                rename($db_ori_to, $db_ori_to . '.old');
                 // copy config database ori
                 copy($db_ori, $root_dir.'database.php');
                 rename($root_dir.'database.php', $db_ori_to);
