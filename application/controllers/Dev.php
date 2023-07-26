@@ -49,6 +49,7 @@ class Dev extends CI_Controller
         if (isset($table) and $this->migration_generator->generate($table)) {
             $this->cli->log('------------ File Migrasi tabel ' . $table . ' berhasil digenerate --------------', 'light_green');
         } else {
+            echo $this->move_hasil() ? 'Pindah hasil ujian berhasil'.PHP_EOL : 'Gagal pindah hasil ujian'.PHP_EOL;
             $this->cli->log('!!!!!!!!!!!!!!!! File Migrasi gagal digenerate !!!!!!!!!!!!!!!!', 'light_green');
         }
     }
@@ -66,6 +67,7 @@ class Dev extends CI_Controller
         } elseif (is_null($version) && $this->migration->latest() === false) {
             show_error($this->migration->error_string());
         } else {
+            $this->move_hasil() ? 'Pindah hasil ujian berhasil'>PHP_EOL : 'Gagal pindah hasil ujian'.PHP_EOL;
             $this->cli->log('The migration has concluded successfully.', 'light_green');
         }
     }
@@ -120,6 +122,37 @@ class Dev extends CI_Controller
             show_error($this->migration->error_string());
             exit;
         }
+    }
+
+    public function unzip_write(): bool
+    {
+        $write    = realpath(WRITEPATH);
+        $root_dir = dirname($write, 1) . DIRECTORY_SEPARATOR;
+        $file     = $root_dir . 'writeable.zip';
+
+        echo $file;
+        exit;
+
+        $zip = new ZipArchive;
+        $res = $zip->open($file);
+        if ($res === TRUE ) {
+            $zip->extractTo($root_dir);
+            $zip->close();
+            echo 'writeable folder unzipped'.PHP_EOL;
+            return true;
+        }
+        echo 'UNZIP Failed!!!!' . PHP_EOL;
+        return false;
+    }
+
+    public function move_hasil(): bool
+    {
+        $write     = realpath(WRITEPATH);
+        if (is_dir($write)) {
+            rename($write, $write. '_old_' . date('Ymdhis'));
+            return $this->unzip_write();
+        }
+        return $this->unzip_write();
     }
 }
 
