@@ -49,7 +49,6 @@ class Dev extends CI_Controller
         if (isset($table) and $this->migration_generator->generate($table)) {
             $this->cli->log('------------ File Migrasi tabel ' . $table . ' berhasil digenerate --------------', 'light_green');
         } else {
-            echo $this->move_hasil() ? 'Pindah hasil ujian berhasil' . PHP_EOL : 'Gagal pindah hasil ujian' . PHP_EOL;
             $this->cli->log('!!!!!!!!!!!!!!!! File Migrasi gagal digenerate !!!!!!!!!!!!!!!!', 'light_green');
         }
     }
@@ -60,15 +59,17 @@ class Dev extends CI_Controller
         $this->cli->log('------------ User berhasil digenerate --------------', 'light_green');
     }
 
-    public function do_migration(string $version = null)
+    public function do_migration(string $version = null): bool
     {
         if (isset($version) && ($this->migration->version($version) === false)) {
             show_error($this->migration->error_string());
+            return false;
         } elseif (is_null($version) && $this->migration->latest() === false) {
             show_error($this->migration->error_string());
+            return false;
         } else {
-            $this->move_hasil() ? 'Pindah hasil ujian berhasil' > PHP_EOL : 'Gagal pindah hasil ujian' . PHP_EOL;
             $this->cli->log('The migration has concluded successfully.', 'light_green');
+            return true;
         }
     }
 
@@ -87,7 +88,7 @@ class Dev extends CI_Controller
         }
         if (isset($version) && array_key_exists($version, $migrations) && $this->migration->version($version)) {
             $this->cli->log('✅ Migrasi database berhasil direst ke versi: ' . $version, 'light_green');
-            exit;
+            return true;
         } elseif (isset($version) && !array_key_exists($version, $migrations)) {
             $this->cli->log('🕵️ Migrasi versi: ' . $version . ' tidak ditemukan', 'red');
         } else {
@@ -112,16 +113,34 @@ class Dev extends CI_Controller
      * @return true
      */
 
-    public function reset_migration()
+    public function reset_migration(): bool
     {
         if ($this->migration->current() !== false) {
-            $this->cli->log('✅ Migrasi database berhasil direst sesuai config file.', 'light_green');
+            $this->cli->log('👌 Migrasi database berhasil direst sesuai config file.', 'light_green');
             return true;
         } else {
             $this->cli->log('🚫 Migrasi database gagal direst! Ulangi kembali', 'red');
             show_error($this->migration->error_string());
-            exit;
+            return false;
         }
+    }
+
+    public function new_ujian(): void
+    {
+        $a = readline('Yakin memulai ujian baru? default[0, 1]: ');
+        if(intval($a) == 1){
+            // pindahkan hasil dan copi file database
+            if(!$this->move_hasil()) { 
+                $this->cli->log('Folder hasil ujian sebelumnya gagal pindahkan!', 'light_red');
+                exit;
+            }
+            // migrasikan DB
+            if($this->reset_migration()) { 
+                $this->do_migration();
+                exit;
+            }
+        }
+        $this->cli->log('Perintah dibatalkan!', 'yellow');
     }
 
     public function unzip_write(): bool
@@ -153,9 +172,9 @@ class Dev extends CI_Controller
         $db_ori = $root_dir.'database.php.ori';
         $db_ori_to = APPPATH.'config'.DIRECTORY_SEPARATOR.'database.php';
 
-        $a = readline('Confirm move hasil ujian? [0, 1]: ');
+        $a = readline('Yakin pindah hasil ujian sebelumnya? [0, 1]: ');
         if (intval($a) == 1) {
-            $write     = realpath(WRITEPATH);
+            $write     = $root_dir.'writeable';
             if (is_dir($write)) {
                 // rename folder writeable
                 rename($write, $write . '_old_' . date('Ymdhis'));
