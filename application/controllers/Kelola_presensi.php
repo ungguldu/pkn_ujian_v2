@@ -50,6 +50,7 @@ class Kelola_presensi extends MY_Controller {
         // helper group opt
         function _group_by($array, $key)
         {
+            if(empty($array)) return [];
             $arr_key = array_keys($array[0]);
             $ret_key = array_values(array_diff($arr_key, [$key]));
 
