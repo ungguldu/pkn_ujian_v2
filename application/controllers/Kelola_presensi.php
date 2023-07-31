@@ -23,7 +23,7 @@ class Kelola_presensi extends MY_Controller {
         $per_page = is_numeric($this->input->get('per_page', true)) ? intval($this->input->get('per_page', true)) : 10;
 
         // filter param
-        $sesi = !empty($this->input->get('sesi', true)) ? is_numeric(xss_clean($this->input->get('sesi', true))) : null;
+        $sesi = !empty($this->input->get('sesi', true)) ? intval(xss_clean($this->input->get('sesi', true))) : null;
         $prodi = !empty($this->input->get('prodi', true)) ? urldecode(xss_clean($this->input->get('prodi', true))) : null;
         $kelas = !empty($this->input->get('kelas', true)) ? urldecode(xss_clean($this->input->get('kelas', true))) : null;
         // filter
