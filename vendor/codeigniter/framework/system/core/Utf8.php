@@ -49,7 +49,7 @@ defined('BASEPATH') OR exit('No direct script access allowed');
  * @author		EllisLab Dev Team
  * @link		https://codeigniter.com/userguide3/libraries/utf8.html
  */
-class CI_Utf8 extends stdClass {
+class CI_Utf8 {
 
 	/**
 	 * Class constructor

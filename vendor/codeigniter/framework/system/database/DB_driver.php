@@ -51,7 +51,7 @@ defined('BASEPATH') OR exit('No direct script access allowed');
  * @author		EllisLab Dev Team
  * @link		https://codeigniter.com/userguide3/database/
  */
-abstract class CI_DB_driver extends stdClass {
+abstract class CI_DB_driver {
 
 	/**
 	 * Data Source Name / Connect string

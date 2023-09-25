@@ -49,7 +49,7 @@ defined('BASEPATH') OR exit('No direct script access allowed');
  * @author		EllisLab Dev Team
  * @link		https://codeigniter.com/userguide3/general/hooks.html
  */
-class CI_Hooks extends stdClass {
+class CI_Hooks {
 
 	/**
 	 * Determines whether hooks are enabled

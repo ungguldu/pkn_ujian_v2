@@ -49,7 +49,7 @@ defined('BASEPATH') OR exit('No direct script access allowed');
  * @author		EllisLab Dev Team
  * @link		https://codeigniter.com/userguide3/libraries/config.html
  */
-class CI_Config extends stdClass {
+class CI_Config {
 
 	/**
 	 * List of all loaded config values

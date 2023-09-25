@@ -53,7 +53,7 @@ defined('BASEPATH') OR exit('No direct script access allowed');
  * @author		EllisLab Dev Team
  * @link		https://codeigniter.com/userguide3/general/profiling.html
  */
-class CI_Profiler extends stdClass {
+class CI_Profiler {
 
 	/**
 	 * List of profiler sections available to show

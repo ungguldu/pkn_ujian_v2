@@ -49,7 +49,7 @@ defined('BASEPATH') OR exit('No direct script access allowed');
  * @author		EllisLab Dev Team
  * @link		https://codeigniter.com/userguide3/libraries/output.html
  */
-class CI_Output extends stdClass {
+class CI_Output {
 
 	/**
 	 * Final output string
