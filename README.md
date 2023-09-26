@@ -1,4 +1,4 @@
-## Aplikasi Portal Ujian BAK PKN STAN
+## Aplikasi Portal Ujian BAAK PKN STAN
 
 adalah sistem aplikasi sederhana sebagai manajemen ujian closed LAN pada PKN STAN
 
@@ -14,7 +14,7 @@ composer --version
 
 untuk melakukan deploy aplikasi lakukan perintah pada terminal sebagai berikut:
 ```bash
-git clone http://10.40.4.5:8080/farisz/pkn_ujian.git
+git clone https://github.com/ungguldu/portal_ujian.git
 
 cd pkn_ujian
 composer Install
