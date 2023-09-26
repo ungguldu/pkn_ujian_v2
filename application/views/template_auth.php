@@ -30,7 +30,7 @@
                     $this->load->view($page, null, FALSE);
                 ?>
                 <div class="text-center text-muted mt-3">
-                    <small>Subbagian Akademik PKN STAN &copy; <?= date('Y'); ?></small>
+                    <small>Subbagian Administrasi Akademik PKN STAN &copy; <?= date('Y'); ?></small>
                 </div>
             </div>
         </div>
