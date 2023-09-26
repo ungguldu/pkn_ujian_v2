@@ -1,6 +1,6 @@
 <?php if (!defined('BASEPATH')) exit('No direct script access allowed');
 
-function izinkan_ujian(object|array $jadwal = null, int $adjust_waktu_mulai = 0)
+function izinkan_ujian(objectarray $jadwal = null, int $adjust_waktu_mulai = 0)
 {
     if(empty($jadwal)) return false;
     $CI = &get_instance();
