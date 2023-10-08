@@ -14,7 +14,7 @@ composer --version
 
 untuk melakukan deploy aplikasi lakukan perintah pada terminal sebagai berikut:
 ```bash
-git clone https://github.com/ungguldu/portal_ujian.git
+git clone https://github.com/ungguldu/pkn_ujian_v2.git
 
 cd pkn_ujian
 composer Install
